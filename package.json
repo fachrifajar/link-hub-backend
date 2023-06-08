@@ -2,21 +2,36 @@
   "name": "link-hub-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "dev": "nodemon script.ts"
+    "start": "node src/index.ts",
+    "dev": "nodemon src/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.17.17",
     "@types/node": "^20.2.5",
+    "body-parser": "^1.20.2",
+    "express-fileupload": "^1.4.0",
     "nodemon": "^2.0.22",
     "prisma": "^4.15.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.3"
   },
   "dependencies": {
-    "@prisma/client": "^4.15.0"
+    "@prisma/client": "^4.15.0",
+    "bcrypt": "^5.1.0",
+    "cloudinary": "^1.37.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "helmet": "^7.0.0",
+    "ioredis": "^5.3.2",
+    "jsonwebtoken": "^9.0.0",
+    "node-input-validator": "^4.5.1",
+    "path": "^0.12.7",
+    "uuid": "^9.0.0"
   }
 }
