@@ -2,13 +2,26 @@ require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const ACC_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
-import { Request, Response, NextFunction } from "express";
+const REF_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const register = async (req: Request, res: Response) => {
+  interface RegisterRequest {
+    email: string;
+    username: string;
+    pwd: string;
+  }
+
+  interface RequestBody {
+    email: string;
+    username: string;
+    pwd: string;
+  }
+
   try {
-    const { email, username, pwd } = req.body;
+    const { email, username, pwd }: RequestBody = req.body;
 
     const existingUser = await prisma.user.findFirst({
       where: {
@@ -22,7 +35,7 @@ const register = async (req: Request, res: Response) => {
 
     const hashedPwd = await bcrypt.hash(pwd, 10);
 
-    const newUser = await prisma.user.create({
+    const newUser: RegisterRequest = await prisma.user.create({
       data: {
         email,
         username,
@@ -32,9 +45,6 @@ const register = async (req: Request, res: Response) => {
 
     res.status(201).json({
       message: `Success created new user: ${email}`,
-      //   data: {
-      //     email,
-      //   },
     });
   } catch (error: any) {
     console.error(error);
@@ -45,8 +55,12 @@ const register = async (req: Request, res: Response) => {
 };
 
 const login = async (req: Request, res: Response) => {
+  interface RequestBody {
+    email: string;
+    pwd: string;
+  }
   try {
-    const { email, pwd } = req.body;
+    const { email, pwd }: RequestBody = req.body;
 
     const user = await prisma.user.findUnique({
       where: { email },
@@ -61,11 +75,29 @@ const login = async (req: Request, res: Response) => {
       {
         id: user?.id,
         name: user?.username,
-        iat: new Date().getTime(),
+        // iat: new Date().getTime(),
       },
       ACC_TOKEN_SECRET,
       { expiresIn: "20s" }
     );
+
+    const refreshToken = jwt.sign(
+      {
+        id: user?.id,
+        name: user?.username,
+        // iat: new Date().getTime(),
+      },
+      REF_TOKEN_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    const addRefToken = await prisma.user.update({
+      where: { id: user?.id },
+      data: {
+        ref_token: refreshToken,
+        is_new_user: 1,
+      },
+    });
 
     res.status(200).json({
       message: `Login successfull!`,
@@ -80,4 +112,34 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
-module.exports = { register, login };
+const refreshToken = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const user = await prisma.user.findFirst({
+      where: { id },
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid ID" });
+    }
+
+    const refreshToken = user.ref_token;
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: "No refresh token found" });
+    }
+
+    res.status(200).json({
+      message: "Successfully retrieved refresh token",
+      data: {
+        refreshToken,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { register, login, refreshToken };

@@ -40,11 +40,12 @@ model User {
   profile_picture String?
   description     String?
   created_at      DateTime  @default(dbgenerated("timezone('Asia/Jakarta', NOW())"))
-  updated_at      DateTime? 
+  updated_at      DateTime?
   is_new_user     Int?      @default(0)
   link            String?
   post_picture    String?
   posts           Post[]
+  ref_token       String?
 }
 
 model Post {
@@ -55,5 +56,5 @@ model Post {
   user         User      @relation(fields: [username], references: [username])
   username     String
   created_at   DateTime  @default(dbgenerated("timezone('Asia/Jakarta', NOW())"))
-  updated_at   DateTime? 
+  updated_at   DateTime?
 }
