@@ -130,11 +130,24 @@ const refreshToken = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "No refresh token found" });
     }
 
-    res.status(200).json({
-      message: "Successfully retrieved refresh token",
-      data: {
-        refreshToken,
-      },
+    jwt.verify(refreshToken, REF_TOKEN_SECRET, (err: any, decoded: any) => {
+      if (err) return res.status(401).json({ message: "Token Expired" });
+
+      const getRefreshToken = jwt.sign(
+        {
+          id: user?.id,
+          name: user?.username,
+        },
+        ACC_TOKEN_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      res.status(200).json({
+        message: "Successfully retrieved refresh token",
+        data: {
+          getRefreshToken,
+        },
+      });
     });
   } catch (error) {
     console.error(error);
