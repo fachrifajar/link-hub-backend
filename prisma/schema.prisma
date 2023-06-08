@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// model User {
+//   id              String    @id @unique @default(cuid())
+//   pwd             String
+//   email           String    @unique
+//   username        String    @unique
+//   profile_picture String?
+//   description     String?
+//   created_at      DateTime  @default(dbgenerated("timezone('Asia/Jakarta', NOW())"))
+//   updated_at      DateTime? @updatedAt
+//   is_new_user     Int?      @default(0)
+//   link            String?
+//   post_picture    String?
+// }
+
+// model Post {
+//   id           String  @id @unique @default(cuid())
+//   username     String
+//   title        String
+//   post_picture String?
+//   url          String
+// }
+
+model User {
+  id              String    @id @unique @default(cuid())
+  pwd             String
+  email           String    @unique
+  username        String    @unique
+  profile_picture String?
+  description     String?
+  created_at      DateTime  @default(dbgenerated("timezone('Asia/Jakarta', NOW())"))
+  updated_at      DateTime? 
+  is_new_user     Int?      @default(0)
+  link            String?
+  post_picture    String?
+  posts           Post[]
+}
+
+model Post {
+  id           String    @id @unique @default(cuid())
+  title        String
+  post_picture String?
+  url          String
+  user         User      @relation(fields: [username], references: [username])
+  username     String
+  created_at   DateTime  @default(dbgenerated("timezone('Asia/Jakarta', NOW())"))
+  updated_at   DateTime? 
+}
