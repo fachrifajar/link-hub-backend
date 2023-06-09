@@ -75,7 +75,6 @@ const login = async (req: Request, res: Response) => {
       {
         id: user?.id,
         name: user?.username,
-        // iat: new Date().getTime(),
       },
       ACC_TOKEN_SECRET,
       { expiresIn: "20s" }
@@ -85,7 +84,6 @@ const login = async (req: Request, res: Response) => {
       {
         id: user?.id,
         name: user?.username,
-        // iat: new Date().getTime(),
       },
       REF_TOKEN_SECRET,
       { expiresIn: "1d" }

@@ -33,15 +33,15 @@ datasource db {
 // }
 
 model User {
-  id              String    @id @unique @default(cuid())
+  id              String   @id @unique @default(cuid())
   pwd             String
-  email           String    @unique
-  username        String    @unique
+  email           String   @unique
+  username        String   @unique
   profile_picture String?
   description     String?
-  created_at      DateTime  @default(dbgenerated("timezone('Asia/Jakarta', NOW())"))
-  updated_at      DateTime?
-  is_new_user     Int?      @default(0)
+  created_at      DateTime @default(dbgenerated("timezone('Asia/Jakarta', NOW())"))
+  updated_at      DateTime @default(dbgenerated("NOW() + interval '7 hour'")) @updatedAt
+  is_new_user     Int?     @default(0)
   link            String?
   post_picture    String?
   posts           Post[]
@@ -49,12 +49,12 @@ model User {
 }
 
 model Post {
-  id           String    @id @unique @default(cuid())
+  id           String   @id @unique @default(cuid())
   title        String
   post_picture String?
   url          String
-  user         User      @relation(fields: [username], references: [username])
+  user         User     @relation(fields: [username], references: [username])
   username     String
-  created_at   DateTime  @default(dbgenerated("timezone('Asia/Jakarta', NOW())"))
-  updated_at   DateTime?
+  created_at   DateTime @default(dbgenerated("timezone('Asia/Jakarta', NOW())"))
+  updated_at   DateTime @default(dbgenerated("NOW() + interval '7 hour'")) @updatedAt
 }
