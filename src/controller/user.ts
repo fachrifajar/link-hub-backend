@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { error, profile } from "console";
 const { cloudinary } = require("../middleware/upload");
 const { v4: uuidv4 } = require("uuid");
 const prisma = new PrismaClient();

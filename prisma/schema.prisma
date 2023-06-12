@@ -52,7 +52,7 @@ model Post {
   id           String   @id @unique @default(cuid())
   title        String
   post_picture String?
-  url          String
+  url          String   @unique @default(cuid())
   user         User     @relation(fields: [username], references: [username])
   username     String
   created_at   DateTime @default(dbgenerated("timezone('Asia/Jakarta', NOW())"))
