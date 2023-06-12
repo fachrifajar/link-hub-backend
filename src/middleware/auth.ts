@@ -43,15 +43,18 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
   interface CustomRequest extends Request {
     id?: string;
   }
-
-  const token =
-    req.headers.authorization?.replace("Bearer ", "") ||
-    req.query.token ||
-    req.cookies.token;
-
-  if (!token) {
+  if (
+    !req?.headers?.authorization?.replace("Bearer ", "") &&
+    req?.query?.token &&
+    req?.cookies?.token
+  ) {
     return res.status(401).json({ message: "Unauthorized: Missing token" });
   }
+
+  const token =
+    req?.headers?.authorization?.replace("Bearer ", "") ||
+    req?.query?.token ||
+    req?.cookies?.token;
 
   try {
     // jwt.verify(token, ACC_TOKEN_SECRET, (err: any, decoded: any) => {

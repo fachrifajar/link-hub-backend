@@ -22,7 +22,6 @@ const editProfile = async (req: Request, res: Response) => {
 
     const getIdToken = (req as any).id;
 
-    if (!getIdToken) throw error;
     const user = await prisma.user.findUnique({
       where: { id: getIdToken },
       select: {
@@ -122,4 +121,72 @@ const editProfile = async (req: Request, res: Response) => {
   }
 };
 
-module.exports = { editProfile };
+const deletePicture = async (req: Request, res: Response) => {
+  interface RequestBody {
+    profile_picture: boolean;
+    post_picture: boolean;
+  }
+  try {
+    const { profile_picture, post_picture } = req.body;
+    const getIdToken = (req as any).id;
+
+    const user = await prisma.user.findUnique({
+      where: { id: getIdToken },
+      select: {
+        username: true,
+        description: true,
+        profile_picture: true,
+        post_picture: true,
+      },
+    });
+    const existingProfilePicture = user?.profile_picture;
+    const existingPostPicture = user?.post_picture;
+
+    if (!profile_picture && !post_picture)
+      return res.status(400).json({ message: "Please pick options to delete" });
+
+    // Delete existing picture if exist
+    if (post_picture) {
+      await cloudinary.v2.uploader.destroy(
+        existingPostPicture,
+        { folder: "link-hub" },
+        function (error: any, result: any) {
+          if (error) {
+            throw error;
+          }
+        }
+      );
+    }
+    if (profile_picture) {
+      await cloudinary.v2.uploader.destroy(
+        existingProfilePicture,
+        { folder: "link-hub" },
+        function (error: any, result: any) {
+          if (error) {
+            throw error;
+          }
+        }
+      );
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: getIdToken },
+      data: {
+        profile_picture: profile_picture ? null : existingProfilePicture,
+        post_picture: post_picture ? null : existingPostPicture,
+      },
+    });
+
+    res.status(200).json({
+      message: `Success Delete Picture`,
+      data: {
+        profile_picture: profile_picture ? "deleted" : null,
+        post_picture: post_picture ? "deleted" : null,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { editProfile, deletePicture };

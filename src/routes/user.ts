@@ -19,4 +19,10 @@ router.patch(
   controller.editProfile
 );
 
+router.patch(
+  "/images/delete",
+  middleware.validateToken,
+  controller.deletePicture
+);
+
 module.exports = router;
