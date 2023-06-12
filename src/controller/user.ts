@@ -34,75 +34,67 @@ const editProfile = async (req: Request, res: Response) => {
     });
     const existingProfilePicture = user?.profile_picture;
     const existingPostPicture = user?.post_picture;
-    console.log("first");
+
     const getProfilePicture = (req as any)?.files?.profile_picture;
     const getPostPicture = (req as any)?.files?.post_picture;
-    console.log(getProfilePicture);
-    console.log(getPostPicture);
 
-    console.log("second");
     let profilePictureCloudinary;
     let postPictureCloudinary;
 
     if ((req as any).files) {
-      console.log("masuk");
-      // getProfilePicture = (req as any)?.files?.profile_picture;
-      // getPostPicture = (req as any)?.files?.post_picture;
-      if (getProfilePicture || getPostPicture) {
-        if (existingProfilePicture) {
-          // Delete existing picture if exist
-          await cloudinary.v2.uploader.destroy(
-            existingProfilePicture,
-            { folder: "link-hub" },
-            function (error: any, result: any) {
-              console.log(result, error);
+      // Delete existing picture if exist
+      if (existingPostPicture) {
+        await cloudinary.v2.uploader.destroy(
+          existingPostPicture,
+          { folder: "link-hub" },
+          function (error: any, result: any) {
+            if (error) {
+              throw error;
             }
-          );
-        }
-        if (existingPostPicture) {
-          // Delete existing picture if exist
-          await cloudinary.v2.uploader.destroy(
-            existingPostPicture,
-            { folder: "link-hub" },
-            function (error: any, result: any) {
-              console.log(result, error);
+          }
+        );
+      }
+      if (existingProfilePicture) {
+        await cloudinary.v2.uploader.destroy(
+          existingProfilePicture,
+          { folder: "link-hub" },
+          function (error: any, result: any) {
+            if (error) {
+              throw error;
             }
-          );
-        }
+          }
+        );
+      }
 
-        if (getProfilePicture) {
-          // Upload new picture
-          await cloudinary.v2.uploader.upload(
-            getProfilePicture.tempFilePath,
-            { public_id: uuidv4(), folder: "link-hub" },
-            async function (error: any, result: any) {
-              if (error) {
-                throw error;
-              }
-
-              profilePictureCloudinary = result?.public_id;
+      // Upload new picture
+      if (getProfilePicture) {
+        await cloudinary.v2.uploader.upload(
+          getProfilePicture.tempFilePath,
+          { public_id: uuidv4(), folder: "link-hub" },
+          async function (error: any, result: any) {
+            if (error) {
+              throw error;
             }
-          );
-        }
 
-        if (getPostPicture) {
-          // Upload new picture
-          await cloudinary.v2.uploader.upload(
-            getPostPicture.tempFilePath,
-            { public_id: uuidv4(), folder: "link-hub" },
-            async function (error: any, result: any) {
-              if (error) {
-                throw error;
-              }
+            profilePictureCloudinary = result?.public_id;
+          }
+        );
+      }
 
-              postPictureCloudinary = result?.public_id;
+      if (getPostPicture) {
+        await cloudinary.v2.uploader.upload(
+          getPostPicture.tempFilePath,
+          { public_id: uuidv4(), folder: "link-hub" },
+          async function (error: any, result: any) {
+            if (error) {
+              throw error;
             }
-          );
-        }
+            postPictureCloudinary = result?.public_id;
+          }
+        );
       }
     }
 
-    console.log("bawah");
     const updatedUser = await prisma.user.update({
       where: { id: getIdToken },
       data: {
@@ -116,7 +108,6 @@ const editProfile = async (req: Request, res: Response) => {
           : user?.post_picture,
       },
     });
-    console.log("updatedUser");
 
     res.status(200).json({
       message: `Success update profile`,
@@ -127,7 +118,6 @@ const editProfile = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
