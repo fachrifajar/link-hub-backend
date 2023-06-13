@@ -20,7 +20,7 @@ const addPost = async (req: Request, res: Response) => {
     });
 
     res.status(201).json({
-      message: "Success Add New Post",
+      message: "Success add new Post",
     });
   } catch (error) {
     console.log(error);
@@ -106,7 +106,7 @@ const editPost = async (req: Request, res: Response) => {
     });
 
     res.status(201).json({
-      message: "Success Edit Post",
+      message: "Success edit Post",
     });
   } catch (error) {
     console.log(error);

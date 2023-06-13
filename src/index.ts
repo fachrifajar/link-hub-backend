@@ -34,6 +34,7 @@ app.use(middleware.logRequest);
 app.use("/auth", require("./routes/auth"));
 app.use("/", require("./routes/user"));
 app.use("/post", require("./routes/post"));
+app.use("/item", require("./routes/item"));
 
 // ... your REST API routes will go here
 

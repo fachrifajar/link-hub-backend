@@ -6,7 +6,6 @@ generator client {
   binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -51,12 +50,34 @@ model User {
 }
 
 model Post {
-  id           String   @id @unique @default(cuid())
-  title        String
-  post_picture String?
-  url          String   @unique @default(cuid())
-  user         User     @relation(fields: [user_id], references: [id])
-  user_id      String
-  created_at   DateTime @default(now())
-  updated_at   DateTime @default(now()) @updatedAt
+  id         String   @id @unique @default(cuid())
+  title      String
+  bg_color   String?
+  url        String   @unique @default(cuid())
+  user       User     @relation(fields: [user_id], references: [id])
+  user_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+  Item       Item[]
+}
+
+model Item {
+  id          String        @id @unique @default(cuid())
+  title       String
+  url         String
+  post        Post          @relation(fields: [post_id], references: [id])
+  post_id     String
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @default(now()) @updatedAt
+  SocialMedia SocialMedia[]
+}
+
+model SocialMedia {
+  id        String   @id @unique @default(cuid())
+  platform  String
+  url       String
+  item      Item     @relation(fields: [item_id], references: [id])
+  item_id   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
