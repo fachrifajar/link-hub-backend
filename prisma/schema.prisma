@@ -34,19 +34,21 @@ datasource db {
 // }
 
 model User {
-  id              String   @id @unique @default(cuid())
+  id              String        @id @unique @default(cuid())
   pwd             String
-  email           String   @unique
-  username        String   @unique
+  email           String        @unique
+  username        String        @unique
   profile_picture String?
   description     String?
-  created_at      DateTime @default(now())
-  updated_at      DateTime @default(now()) @updatedAt
-  is_new_user     Int?     @default(0)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @default(now()) @updatedAt
+  is_new_user     Int?          @default(0)
   link            String?
   post_picture    String?
   posts           Post[]
   ref_token       String?
+  Item            Item[]
+  SocialMedia     SocialMedia[]
 }
 
 model Post {
@@ -67,6 +69,8 @@ model Item {
   url         String
   post        Post          @relation(fields: [post_id], references: [id])
   post_id     String
+  user        User          @relation(fields: [user_id], references: [id])
+  user_id     String
   created_at  DateTime      @default(now())
   updated_at  DateTime      @default(now()) @updatedAt
   SocialMedia SocialMedia[]
@@ -78,6 +82,8 @@ model SocialMedia {
   url       String
   item      Item     @relation(fields: [item_id], references: [id])
   item_id   String
+  user      User     @relation(fields: [user_id], references: [id])
+  user_id   String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }

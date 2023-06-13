@@ -25,4 +25,6 @@ router.patch(
   controller.deletePicture
 );
 
+router.get("/", middleware?.validateToken, controller?.getProfile);
+
 module.exports = router;

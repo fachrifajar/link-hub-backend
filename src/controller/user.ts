@@ -188,4 +188,42 @@ const deletePicture = async (req: Request, res: Response) => {
   }
 };
 
-module.exports = { editProfile, deletePicture };
+const getProfile = async (req: Request, res: Response) => {
+  try {
+    const getIdToken = (req as any).id;
+
+    const user = await prisma.user.findUnique({
+      where: { id: getIdToken },
+      select: {
+        profile_picture: true,
+        username: true,
+        // posts: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+        // Item: {
+        //   select: {
+        //     title: true,
+        //     url: true,
+        //   },
+        // },
+      },
+    });
+
+    // const postCount = user?.posts?.length;
+
+    res.status(200).json({
+      message: "Success get user profile",
+      data: {
+        profile_picture: user?.profile_picture,
+        // post_count: postCount,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { editProfile, deletePicture, getProfile };

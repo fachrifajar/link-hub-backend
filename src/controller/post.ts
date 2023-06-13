@@ -6,21 +6,39 @@ const prisma = new PrismaClient();
 const addPost = async (req: Request, res: Response) => {
   interface RequestBody {
     title: string;
+    bg_color: string;
   }
 
   try {
     const getIdToken = (req as any).id;
-    const { title }: RequestBody = req.body;
+    const { title, bg_color }: RequestBody = req.body;
+
+    const validateCountPost = await prisma.post.findMany({
+      where: { user_id: getIdToken },
+      select: {
+        title: true,
+      },
+    });
+
+    if (validateCountPost.length === 3)
+      return res.status(400).json({
+        message:
+          "You have reached the maximum limit of posts. Only 3 posts are allowed per user.",
+      });
 
     const addPost = await prisma.post.create({
       data: {
         title,
+        bg_color,
         user_id: getIdToken,
+      },
+      select: {
+        id: true,
       },
     });
 
     res.status(201).json({
-      message: "Success add new Post",
+      message: `Success add new Post: ${addPost?.id}`,
     });
   } catch (error) {
     console.log(error);
@@ -37,36 +55,15 @@ const getPost = async (req: Request, res: Response) => {
       select: {
         id: true,
         title: true,
+        bg_color: true,
         url: true,
         created_at: true,
         updated_at: true,
       },
     });
 
-    // const updatedTime = new Date(post?.[0].created_at);
-    // const formattedDate = updatedTime.toLocaleString("en-US", {
-    //   day: "numeric",
-    //   month: "long",
-    //   year: "numeric",
-    //   hour: "numeric",
-    //   minute: "numeric",
-    //   second: "numeric",
-    // });
-    // console.log(formattedDate);
-
-    // const updatedTime2 = new Date(post?.[0].updated_at);
-    // const formattedDate2 = updatedTime2.toLocaleString("en-US", {
-    //   day: "numeric",
-    //   month: "long",
-    //   year: "numeric",
-    //   hour: "numeric",
-    //   minute: "numeric",
-    //   second: "numeric",
-    // });
-    // console.log(formattedDate2);
-
     res.status(200).json({
-      message: `Success get detail`,
+      message: `Success get user Post`,
       data: {
         post,
       },
@@ -80,9 +77,10 @@ const editPost = async (req: Request, res: Response) => {
   interface RequestBody {
     title: string;
     post_id: string;
+    bg_color: string;
   }
   try {
-    const { title, post_id }: RequestBody = req.body;
+    const { title, post_id, bg_color }: RequestBody = req.body;
     const getIdToken = (req as any).id;
 
     const validatePost = await prisma.post.findUnique({
@@ -91,6 +89,9 @@ const editPost = async (req: Request, res: Response) => {
         user_id: true,
       },
     });
+
+    if (!validatePost)
+      return res.status(400).json({ message: "post_id not found" });
 
     if (validatePost?.user_id !== getIdToken) {
       return res
@@ -102,6 +103,7 @@ const editPost = async (req: Request, res: Response) => {
       where: { id: post_id },
       data: {
         title,
+        bg_color,
       },
     });
 
@@ -123,8 +125,17 @@ const deletePost = async (req: Request, res: Response) => {
       where: { id: post_id },
       select: {
         user_id: true,
+        Item: {
+          select: {
+            post_id: true,
+          },
+        },
       },
     });
+
+    if (!validatePost) {
+      return res.status(400).json({ message: "post_id not found" });
+    }
 
     if (validatePost?.user_id !== getIdToken) {
       return res
@@ -132,12 +143,21 @@ const deletePost = async (req: Request, res: Response) => {
         .json({ message: "You cannot delete another user's post." });
     }
 
-    const deletePost = await prisma.post.delete({
-      where: { id: post_id },
-    });
+    if (!validatePost?.Item?.length) {
+      const deletePost = await prisma.post.delete({
+        where: { id: post_id },
+      });
+    } else {
+      const deleteItems = await prisma.item.deleteMany({
+        where: { post_id },
+      });
+      const deletePost = await prisma.post.delete({
+        where: { id: post_id },
+      });
+    }
 
-    res.status(201).json({
-      message: "Success Delete Post",
+    res.status(202).json({
+      message: "Success delete Post",
     });
   } catch (error) {
     console.log(error);
