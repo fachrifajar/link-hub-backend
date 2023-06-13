@@ -57,22 +57,34 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
     req?.cookies?.token;
 
   try {
-    // jwt.verify(token, ACC_TOKEN_SECRET, (err: any, decoded: any) => {
-    //   if (err) return res.status(401).json({ message: "Token Expired" });
-    //   (req as any).id = decoded;
-    //   (req as any).name = decoded;
+    jwt.verify(token, ACC_TOKEN_SECRET, (err: any, decoded: any) => {
+      if (err) return res.status(401).json({ message: "Token Expired" });
+      (req as any).id = decoded.id;
+      (req as any).name = decoded.name;
 
-    //   next();
-    // });
+      next();
+    });
 
-    const decoded = jwt.verify(token, ACC_TOKEN_SECRET) as {
-      id: string;
-      name: string;
-    };
-    (req as any).id = decoded.id;
-    (req as any).name = decoded.name;
+    // const decoded = await new Promise((resolve, reject) => {
+    //   jwt.verify(token, ACC_TOKEN_SECRET, (err: any, decoded: any) => {
+    //     if (err) reject(err);
+    //     resolve(decoded);
+    //   });
+    // }) as { id: string; name: string };
 
-    next();
+    // (req as any).id = decoded.id;
+    // (req as any).name = decoded.name;
+
+    // next();
+
+    // const decoded = jwt.verify(token, ACC_TOKEN_SECRET) as {
+    //   id: string;
+    //   name: string;
+    // };
+    // (req as any).id = decoded.id;
+    // (req as any).name = decoded.name;
+
+    // next();
   } catch (error) {
     console.error(error);
     return res.status(401).json({ message: "Unauthorized: Invalid token" });

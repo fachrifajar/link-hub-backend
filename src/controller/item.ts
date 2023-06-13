@@ -140,19 +140,19 @@ const getItem = async (req: Request, res: Response) => {
 
 const deleteItem = async (req: Request, res: Response) => {
   try {
-    const { post_id } = req.params;
+    const { item_id } = req.params;
 
     const getIdToken = (req as any).id;
 
     const validatePost = await prisma.item.findUnique({
-      where: { id: post_id },
+      where: { id: item_id },
       select: {
         user_id: true,
       },
     });
 
     if (!validatePost)
-      return res.status(400).json({ message: "post_id not found" });
+      return res.status(400).json({ message: "item_id not found" });
 
     if (validatePost?.user_id !== getIdToken) {
       return res
@@ -161,7 +161,7 @@ const deleteItem = async (req: Request, res: Response) => {
     }
 
     const deletePost = await prisma.item.delete({
-      where: { id: post_id },
+      where: { id: item_id },
     });
 
     res.status(202).json({

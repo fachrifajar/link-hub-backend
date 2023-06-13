@@ -7,7 +7,7 @@ router.post("/add", middleware?.validateToken, controller?.addItem);
 router.patch("/edit", middleware?.validateToken, controller?.editItem);
 router.get("/:post_id", middleware?.validateToken, controller?.getItem);
 router.delete(
-  "/delete/item_id",
+  "/delete/:item_id",
   middleware?.validateToken,
   controller?.deleteItem
 );
