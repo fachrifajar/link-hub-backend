@@ -1,13 +1,13 @@
-const express = require("express");
-const helmet = require("helmet");
-const bodyParser = require("body-parser");
-const fileUpload = require("express-fileupload");
-const cors = require("cors");
+import express from "express";
+import helmet from "helmet";
+import bodyParser from "body-parser";
+import fileUpload from "express-fileupload";
+import cors from "cors";
+import path from "path";
+
+var middleware = require("./middleware/log");
+
 const app = express();
-const path = require("path");
-
-const middleware = require("./middleware/log");
-
 // app.use(
 //   cors({
 //     origin: ['http://localhost:3000', 'https://food-hub-v2.vercel.app'],
@@ -32,8 +32,8 @@ app.use(
 
 app.use(middleware.logRequest);
 app.use("/auth", require("./routes/auth"));
-app.use('/', require('./routes/user'))
-app.use('/post', require('./routes/post'))
+app.use("/", require("./routes/user"));
+app.use("/post", require("./routes/post"));
 
 // ... your REST API routes will go here
 

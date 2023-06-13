@@ -12,4 +12,4 @@ const urlValidator = (req: Request, res: Response) => {
   });
 };
 
-export { logRequest, urlValidator };
+module.exports = { logRequest, urlValidator };

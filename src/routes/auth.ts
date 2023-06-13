@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-const controller = require("../controller/auth.ts");
+const controller = require("../controller/auth");
 const middleware = require("../middleware/auth");
 
 router.post("/register", middleware.registerValidator, controller.register);
