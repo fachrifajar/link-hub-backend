@@ -17,5 +17,6 @@ router.patch("/edit", middleware.validateToken, middlewareUpload.fileExtLimiter(
     ".JPEG",
 ]), middlewareUpload.fileSizeLimiter, controller.editProfile);
 router.patch("/images/delete", middleware.validateToken, controller.deletePicture);
+router.get("/", middleware === null || middleware === void 0 ? void 0 : middleware.validateToken, controller === null || controller === void 0 ? void 0 : controller.getProfile);
 module.exports = router;
 //# sourceMappingURL=user.js.map

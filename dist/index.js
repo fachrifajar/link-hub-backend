@@ -31,6 +31,8 @@ app.use(middleware.logRequest);
 app.use("/auth", require("./routes/auth"));
 app.use("/", require("./routes/user"));
 app.use("/post", require("./routes/post"));
+app.use("/item", require("./routes/item"));
+app.use("/socmed", require("./routes/socmed"));
 // ... your REST API routes will go here
 app.listen(4999, function () {
     return console.log("REST API server ready at: http://localhost:4999");

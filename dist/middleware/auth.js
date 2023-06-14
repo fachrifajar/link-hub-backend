@@ -48,16 +48,29 @@ var validateToken = function (req, res, next) {
         ((_g = req === null || req === void 0 ? void 0 : req.query) === null || _g === void 0 ? void 0 : _g.token) ||
         ((_h = req === null || req === void 0 ? void 0 : req.cookies) === null || _h === void 0 ? void 0 : _h.token);
     try {
-        // jwt.verify(token, ACC_TOKEN_SECRET, (err: any, decoded: any) => {
-        //   if (err) return res.status(401).json({ message: "Token Expired" });
-        //   (req as any).id = decoded;
-        //   (req as any).name = decoded;
-        //   next();
-        // });
-        var decoded = jwt.verify(token, ACC_TOKEN_SECRET);
-        req.id = decoded.id;
-        req.name = decoded.name;
-        next();
+        jwt.verify(token, ACC_TOKEN_SECRET, function (err, decoded) {
+            if (err)
+                return res.status(401).json({ message: "Token Expired" });
+            req.id = decoded.id;
+            req.name = decoded.name;
+            next();
+        });
+        // const decoded = await new Promise((resolve, reject) => {
+        //   jwt.verify(token, ACC_TOKEN_SECRET, (err: any, decoded: any) => {
+        //     if (err) reject(err);
+        //     resolve(decoded);
+        //   });
+        // }) as { id: string; name: string };
+        // (req as any).id = decoded.id;
+        // (req as any).name = decoded.name;
+        // next();
+        // const decoded = jwt.verify(token, ACC_TOKEN_SECRET) as {
+        //   id: string;
+        //   name: string;
+        // };
+        // (req as any).id = decoded.id;
+        // (req as any).name = decoded.name;
+        // next();
     }
     catch (error) {
         console.error(error);

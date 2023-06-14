@@ -210,7 +210,7 @@ var deletePicture = function (req, res) { return __awaiter(void 0, void 0, void 
                 })];
             case 7:
                 updatedUser = _b.sent();
-                res.status(200).json({
+                res.status(202).json({
                     message: "Success Delete Picture",
                     data: {
                         profile_picture: profile_picture ? "deleted" : null,
@@ -226,5 +226,50 @@ var deletePicture = function (req, res) { return __awaiter(void 0, void 0, void 
         }
     });
 }); };
-module.exports = { editProfile: editProfile, deletePicture: deletePicture };
+var getProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var getIdToken, user, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                getIdToken = req.id;
+                return [4 /*yield*/, prisma.user.findUnique({
+                        where: { id: getIdToken },
+                        select: {
+                            profile_picture: true,
+                            username: true,
+                            // posts: {
+                            //   select: {
+                            //     id: true,
+                            //   },
+                            // },
+                            // Item: {
+                            //   select: {
+                            //     title: true,
+                            //     url: true,
+                            //   },
+                            // },
+                        },
+                    })];
+            case 1:
+                user = _a.sent();
+                // const postCount = user?.posts?.length;
+                res.status(200).json({
+                    message: "Success get user profile",
+                    data: {
+                        profile_picture: user === null || user === void 0 ? void 0 : user.profile_picture,
+                        // post_count: postCount,
+                    },
+                });
+                return [3 /*break*/, 3];
+            case 2:
+                error_3 = _a.sent();
+                console.log(error_3);
+                res.status(500).json({ message: "Internal server error" });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+module.exports = { editProfile: editProfile, deletePicture: deletePicture, getProfile: getProfile };
 //# sourceMappingURL=user.js.map

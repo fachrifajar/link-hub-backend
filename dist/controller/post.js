@@ -40,33 +40,49 @@ var client_1 = require("@prisma/client");
 var uuidv4 = require("uuid").v4;
 var prisma = new client_1.PrismaClient();
 var addPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var getIdToken, title, addPost_1, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var getIdToken, _a, title, bg_color, validateCountPost, addPost_1, error_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.label = 1;
+                _b.label = 1;
             case 1:
-                _a.trys.push([1, 3, , 4]);
+                _b.trys.push([1, 4, , 5]);
                 getIdToken = req.id;
-                title = req.body.title;
-                return [4 /*yield*/, prisma.post.create({
-                        data: {
-                            title: title,
-                            user_id: getIdToken,
+                _a = req.body, title = _a.title, bg_color = _a.bg_color;
+                return [4 /*yield*/, prisma.post.findMany({
+                        where: { user_id: getIdToken },
+                        select: {
+                            title: true,
                         },
                     })];
             case 2:
-                addPost_1 = _a.sent();
-                res.status(201).json({
-                    message: "Success Add New Post",
-                });
-                return [3 /*break*/, 4];
+                validateCountPost = _b.sent();
+                if (validateCountPost.length === 3)
+                    return [2 /*return*/, res.status(400).json({
+                            message: "You have reached the maximum limit of posts. Only 3 posts are allowed per user.",
+                        })];
+                return [4 /*yield*/, prisma.post.create({
+                        data: {
+                            title: title,
+                            bg_color: bg_color,
+                            user_id: getIdToken,
+                        },
+                        select: {
+                            id: true,
+                        },
+                    })];
             case 3:
-                error_1 = _a.sent();
+                addPost_1 = _b.sent();
+                res.status(201).json({
+                    message: "Success add new Post: ".concat(addPost_1 === null || addPost_1 === void 0 ? void 0 : addPost_1.id),
+                });
+                return [3 /*break*/, 5];
+            case 4:
+                error_1 = _b.sent();
                 console.log(error_1);
                 res.status(500).json({ message: "Internal server error" });
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
@@ -82,35 +98,23 @@ var getPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                         select: {
                             id: true,
                             title: true,
+                            bg_color: true,
                             url: true,
                             created_at: true,
                             updated_at: true,
+                            SocialMedia: {
+                                select: {
+                                    id: true,
+                                    platform: true,
+                                    url: true,
+                                },
+                            },
                         },
                     })];
             case 1:
                 post = _a.sent();
-                // const updatedTime = new Date(post?.[0].created_at);
-                // const formattedDate = updatedTime.toLocaleString("en-US", {
-                //   day: "numeric",
-                //   month: "long",
-                //   year: "numeric",
-                //   hour: "numeric",
-                //   minute: "numeric",
-                //   second: "numeric",
-                // });
-                // console.log(formattedDate);
-                // const updatedTime2 = new Date(post?.[0].updated_at);
-                // const formattedDate2 = updatedTime2.toLocaleString("en-US", {
-                //   day: "numeric",
-                //   month: "long",
-                //   year: "numeric",
-                //   hour: "numeric",
-                //   minute: "numeric",
-                //   second: "numeric",
-                // });
-                // console.log(formattedDate2);
                 res.status(200).json({
-                    message: "Success get detail",
+                    message: "Success get user Post",
                     data: {
                         post: post,
                     },
@@ -125,14 +129,14 @@ var getPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, title, post_id, getIdToken, validatePost, editPost_1, error_3;
+    var _a, title, post_id, bg_color, getIdToken, validatePost, editPost_1, error_3;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.label = 1;
             case 1:
                 _b.trys.push([1, 4, , 5]);
-                _a = req.body, title = _a.title, post_id = _a.post_id;
+                _a = req.body, title = _a.title, post_id = _a.post_id, bg_color = _a.bg_color;
                 getIdToken = req.id;
                 return [4 /*yield*/, prisma.post.findUnique({
                         where: { id: post_id },
@@ -142,6 +146,8 @@ var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                     })];
             case 2:
                 validatePost = _b.sent();
+                if (!validatePost)
+                    return [2 /*return*/, res.status(400).json({ message: "post_id not found" })];
                 if ((validatePost === null || validatePost === void 0 ? void 0 : validatePost.user_id) !== getIdToken) {
                     return [2 /*return*/, res
                             .status(400)
@@ -151,12 +157,13 @@ var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                         where: { id: post_id },
                         data: {
                             title: title,
+                            bg_color: bg_color,
                         },
                     })];
             case 3:
                 editPost_1 = _b.sent();
                 res.status(201).json({
-                    message: "Success Edit Post",
+                    message: "Success edit Post",
                 });
                 return [3 /*break*/, 5];
             case 4:
@@ -169,41 +176,64 @@ var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 var deletePost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var post_id, getIdToken, validatePost, deletePost_1, error_4;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var post_id, getIdToken, validatePost, deletePost_1, deleteItems, deletePost_2, error_4;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.trys.push([0, 3, , 4]);
+                _b.trys.push([0, 7, , 8]);
                 post_id = req.params.post_id;
                 getIdToken = req.id;
                 return [4 /*yield*/, prisma.post.findUnique({
                         where: { id: post_id },
                         select: {
                             user_id: true,
+                            Item: {
+                                select: {
+                                    post_id: true,
+                                },
+                            },
                         },
                     })];
             case 1:
-                validatePost = _a.sent();
+                validatePost = _b.sent();
+                if (!validatePost) {
+                    return [2 /*return*/, res.status(400).json({ message: "post_id not found" })];
+                }
                 if ((validatePost === null || validatePost === void 0 ? void 0 : validatePost.user_id) !== getIdToken) {
                     return [2 /*return*/, res
                             .status(400)
                             .json({ message: "You cannot delete another user's post." })];
                 }
+                if (!!((_a = validatePost === null || validatePost === void 0 ? void 0 : validatePost.Item) === null || _a === void 0 ? void 0 : _a.length)) return [3 /*break*/, 3];
                 return [4 /*yield*/, prisma.post.delete({
                         where: { id: post_id },
                     })];
             case 2:
-                deletePost_1 = _a.sent();
-                res.status(201).json({
-                    message: "Success Delete Post",
+                deletePost_1 = _b.sent();
+                return [3 /*break*/, 6];
+            case 3: return [4 /*yield*/, prisma.item.deleteMany({
+                    where: { post_id: post_id },
+                })];
+            case 4:
+                deleteItems = _b.sent();
+                return [4 /*yield*/, prisma.post.delete({
+                        where: { id: post_id },
+                    })];
+            case 5:
+                deletePost_2 = _b.sent();
+                _b.label = 6;
+            case 6:
+                res.status(202).json({
+                    message: "Success delete Post",
                 });
-                return [3 /*break*/, 4];
-            case 3:
-                error_4 = _a.sent();
+                return [3 /*break*/, 8];
+            case 7:
+                error_4 = _b.sent();
                 console.log(error_4);
                 res.status(500).json({ message: "Internal server error" });
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 8];
+            case 8: return [2 /*return*/];
         }
     });
 }); };
