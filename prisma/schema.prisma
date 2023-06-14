@@ -52,36 +52,36 @@ model User {
 }
 
 model Post {
-  id         String   @id @unique @default(cuid())
-  title      String
-  bg_color   String?
-  url        String   @unique @default(cuid())
-  user       User     @relation(fields: [user_id], references: [id])
-  user_id    String
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
-  Item       Item[]
-}
-
-model Item {
   id          String        @id @unique @default(cuid())
   title       String
-  url         String
-  post        Post          @relation(fields: [post_id], references: [id])
-  post_id     String
+  bg_color    String?
+  url         String        @unique @default(cuid())
   user        User          @relation(fields: [user_id], references: [id])
   user_id     String
   created_at  DateTime      @default(now())
   updated_at  DateTime      @default(now()) @updatedAt
+  Item        Item[]
   SocialMedia SocialMedia[]
+}
+
+model Item {
+  id         String   @id @unique @default(cuid())
+  title      String
+  url        String
+  post       Post     @relation(fields: [post_id], references: [id])
+  post_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+  user_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 }
 
 model SocialMedia {
   id        String   @id @unique @default(cuid())
   platform  String
   url       String
-  item      Item     @relation(fields: [item_id], references: [id])
-  item_id   String
+  post      Post     @relation(fields: [post_id], references: [id])
+  post_id   String
   user      User     @relation(fields: [user_id], references: [id])
   user_id   String
   createdAt DateTime @default(now())
