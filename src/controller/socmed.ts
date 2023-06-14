@@ -57,4 +57,74 @@ const addSocmed = async (req: Request, res: Response) => {
   }
 };
 
-module.exports = { addSocmed };
+const editSocmed = async (req: Request, res: Response) => {
+  interface RequestBody {
+    platform: string;
+    url: string;
+    socmed_id: string;
+  }
+  try {
+    const { platform, url, socmed_id }: RequestBody = req.body;
+    const getIdToken = (req as any).id;
+
+    const validateSocmed = await prisma.socialMedia.findUnique({
+      where: { id: socmed_id },
+      select: {
+        user_id: true,
+      },
+    });
+
+    if (validateSocmed?.user_id !== getIdToken) {
+      return res
+        .status(400)
+        .json({ message: "You cannot edit another user's post." });
+    }
+
+    const editSocmed = await prisma.socialMedia.update({
+      where: { id: socmed_id },
+      data: {
+        platform,
+        url,
+      },
+    });
+
+    res.status(201).json({
+      message: "Success edit Post",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const deleteSocmed = async (req: Request, res: Response) => {
+  const { socmed_id } = req.params;
+  const getIdToken = (req as any).id;
+
+  const validateSocmed = await prisma.socialMedia.findUnique({
+    where: { id: socmed_id },
+    select: {
+      user_id: true,
+    },
+  });
+
+  if (!validateSocmed) {
+    return res.status(400).json({ message: "socmed_id not found" });
+  }
+
+  if (validateSocmed?.user_id !== getIdToken) {
+    return res
+      .status(400)
+      .json({ message: "You cannot delete another user's social media." });
+  }
+
+  const deleteSocmed = await prisma.socialMedia.delete({
+    where: { id: socmed_id },
+  });
+
+  res.status(202).json({
+    message: "Success delete social media",
+  });
+};
+
+module.exports = { addSocmed, editSocmed, deleteSocmed };

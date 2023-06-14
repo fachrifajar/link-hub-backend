@@ -59,6 +59,13 @@ const getPost = async (req: Request, res: Response) => {
         url: true,
         created_at: true,
         updated_at: true,
+        SocialMedia: {
+          select: {
+            id: true,
+            platform: true,
+            url: true,
+          },
+        },
       },
     });
 

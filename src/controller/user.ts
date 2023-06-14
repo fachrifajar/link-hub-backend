@@ -176,7 +176,7 @@ const deletePicture = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json({
+    res.status(202).json({
       message: `Success Delete Picture`,
       data: {
         profile_picture: profile_picture ? "deleted" : null,
