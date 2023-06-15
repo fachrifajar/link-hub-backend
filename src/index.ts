@@ -8,13 +8,13 @@ import path from "path";
 var middleware = require("./middleware/log");
 
 const app = express();
-// app.use(
-//   cors({
-//     origin: ['http://localhost:3000', 'https://food-hub-v2.vercel.app'],
-//     credentials: true,
-//     allowedHeaders: ['Content-Type', 'Authorization'],
-//   })
-// )
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(helmet());
 app.use(express.json());

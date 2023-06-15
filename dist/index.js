@@ -7,16 +7,15 @@ var express_1 = __importDefault(require("express"));
 var helmet_1 = __importDefault(require("helmet"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var express_fileupload_1 = __importDefault(require("express-fileupload"));
+var cors_1 = __importDefault(require("cors"));
 var path_1 = __importDefault(require("path"));
 var middleware = require("./middleware/log");
 var app = (0, express_1.default)();
-// app.use(
-//   cors({
-//     origin: ['http://localhost:3000', 'https://food-hub-v2.vercel.app'],
-//     credentials: true,
-//     allowedHeaders: ['Content-Type', 'Authorization'],
-//   })
-// )
+app.use((0, cors_1.default)({
+    origin: ["http://localhost:3000"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));
 app.use((0, helmet_1.default)());
 app.use(express_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
