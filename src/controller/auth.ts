@@ -35,13 +35,23 @@ const register = async (req: Request, res: Response) => {
 
     const hashedPwd = await bcrypt.hash(pwd, 10);
 
-    const newUser: RegisterRequest = await prisma.user.create({
-      data: {
-        email,
-        username,
-        pwd: hashedPwd,
-      },
-    });
+    if (!pwd?.length) {
+      const newUser: RegisterRequest = await prisma.user.create({
+        data: {
+          email,
+          username,
+          pwd: "firebase google auth",
+        },
+      });
+    } else {
+      const newUser: RegisterRequest = await prisma.user.create({
+        data: {
+          email,
+          username,
+          pwd: hashedPwd,
+        },
+      });
+    }
 
     res.status(201).json({
       message: `Success created new user: ${email}`,
