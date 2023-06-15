@@ -25,7 +25,7 @@ const registerValidator = (req: Request, res: Response, next: NextFunction) => {
   const rules = new Validator(req.body, {
     email: "required|email",
     // pwd: "required",
-    username: "required",
+    // username: "required",
   });
 
   rules.check().then((matched: any) => {
