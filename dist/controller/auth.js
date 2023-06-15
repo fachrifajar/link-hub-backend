@@ -45,7 +45,7 @@ var client_1 = require("@prisma/client");
 var uuid_1 = require("uuid");
 var prisma = new client_1.PrismaClient();
 var register = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, username, pwd, existingUser, googleAuthValidate, hashedPwd, generatedUuid, usernameRandom, newUser, newUser, error_1;
+    var _a, email, username, pwd, existingUser, googleAuthValidate, hashedPwd, generatedUuid, usernameRandom, secretPwd, newUser, newUser, error_1;
     var _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
@@ -77,12 +77,13 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                 hashedPwd = _c.sent();
                 generatedUuid = (0, uuid_1.v4)();
                 usernameRandom = "firebase-".concat(generatedUuid);
+                secretPwd = process.env.SECRET_PWD || "";
                 if (!!(pwd === null || pwd === void 0 ? void 0 : pwd.length)) return [3 /*break*/, 6];
                 return [4 /*yield*/, prisma.user.create({
                         data: {
                             email: email,
                             username: usernameRandom,
-                            pwd: "firebase-google-auth",
+                            pwd: secretPwd,
                         },
                     })];
             case 5:

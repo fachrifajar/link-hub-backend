@@ -45,13 +45,13 @@ const register = async (req: Request, res: Response) => {
     const hashedPwd = await bcrypt.hash(pwd, 10);
     const generatedUuid = uuidv4();
     const usernameRandom = `firebase-${generatedUuid}`;
-
+    const secretPwd = process.env.SECRET_PWD || ""
     if (!pwd?.length) {
-      const newUser: RegisterRequest = await prisma.user.create({
+      const newUser = await prisma.user.create({
         data: {
           email,
           username: usernameRandom,
-          pwd: "firebase-google-auth",
+          pwd: secretPwd,
         },
       });
     } else {
