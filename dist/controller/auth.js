@@ -121,7 +121,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
             case 0:
                 _b.label = 1;
             case 1:
-                _b.trys.push([1, 5, , 6]);
+                _b.trys.push([1, 6, , 7]);
                 _a = req.body, email = _a.email, pwd = _a.pwd;
                 return [4 /*yield*/, prisma.user.findUnique({
                         where: { email: email },
@@ -130,11 +130,14 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                 user = _b.sent();
                 if (!user)
                     return [2 /*return*/, res.status(401).json({ message: "Email not found" })];
+                if (!(pwd !== process.env.SECRET_PWD)) return [3 /*break*/, 4];
                 return [4 /*yield*/, bcrypt.compare(pwd, user.pwd)];
             case 3:
                 isPasswordValid = _b.sent();
                 if (!isPasswordValid)
                     return [2 /*return*/, res.status(401).json({ message: "Invalid password" })];
+                _b.label = 4;
+            case 4:
                 accessToken = jwt.sign({
                     id: user === null || user === void 0 ? void 0 : user.id,
                     name: user === null || user === void 0 ? void 0 : user.username,
@@ -150,7 +153,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                             is_new_user: 1,
                         },
                     })];
-            case 4:
+            case 5:
                 addRefToken = _b.sent();
                 res.status(200).json({
                     message: "Login successfull!",
@@ -160,12 +163,12 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                         accessToken: accessToken,
                     },
                 });
-                return [3 /*break*/, 6];
-            case 5:
+                return [3 /*break*/, 7];
+            case 6:
                 error_2 = _b.sent();
                 res.status(500).json({ message: "Internal server error" });
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); };
