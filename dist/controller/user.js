@@ -52,14 +52,14 @@ var cloudinary = require("../middleware/upload").cloudinary;
 var uuidv4 = require("uuid").v4;
 var prisma = new client_1.PrismaClient();
 var editProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, username, description, profile_picture, post_picture, getIdToken, user, existingProfilePicture, existingPostPicture, getProfilePicture, getPostPicture, profilePictureCloudinary_1, postPictureCloudinary_1, updatedUser, error_1;
+    var _a, username, description, profile_picture, post_picture, getIdToken, user, existingProfilePicture, existingPostPicture, getProfilePicture, getPostPicture, profilePictureCloudinary_1, postPictureCloudinary_1, validateUsername, updatedUser, error_1;
     var _b, _c;
     return __generator(this, function (_d) {
         switch (_d.label) {
             case 0:
                 _d.label = 1;
             case 1:
-                _d.trys.push([1, 12, , 13]);
+                _d.trys.push([1, 13, , 14]);
                 _a = req.body, username = _a.username, description = _a.description, profile_picture = _a.profile_picture, post_picture = _a.post_picture;
                 getIdToken = req.id;
                 return [4 /*yield*/, prisma.user.findUnique({
@@ -77,28 +77,43 @@ var editProfile = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 existingPostPicture = user === null || user === void 0 ? void 0 : user.post_picture;
                 getProfilePicture = (_b = req === null || req === void 0 ? void 0 : req.files) === null || _b === void 0 ? void 0 : _b.profile_picture;
                 getPostPicture = (_c = req === null || req === void 0 ? void 0 : req.files) === null || _c === void 0 ? void 0 : _c.post_picture;
-                if (!req.files) return [3 /*break*/, 10];
-                if (!existingPostPicture) return [3 /*break*/, 4];
+                return [4 /*yield*/, prisma.user.findMany({
+                        where: {
+                            username: username,
+                            NOT: {
+                                id: getIdToken,
+                            },
+                        },
+                    })];
+            case 3:
+                validateUsername = _d.sent();
+                if (validateUsername.length) {
+                    return [2 /*return*/, res
+                            .status(400)
+                            .json({ message: "That username is already taken" })];
+                }
+                if (!req.files) return [3 /*break*/, 11];
+                if (!existingPostPicture) return [3 /*break*/, 5];
                 return [4 /*yield*/, cloudinary.v2.uploader.destroy(existingPostPicture, { folder: "link-hub" }, function (error, result) {
                         if (error) {
                             throw error;
                         }
                     })];
-            case 3:
-                _d.sent();
-                _d.label = 4;
             case 4:
-                if (!existingProfilePicture) return [3 /*break*/, 6];
+                _d.sent();
+                _d.label = 5;
+            case 5:
+                if (!existingProfilePicture) return [3 /*break*/, 7];
                 return [4 /*yield*/, cloudinary.v2.uploader.destroy(existingProfilePicture, { folder: "link-hub" }, function (error, result) {
                         if (error) {
                             throw error;
                         }
                     })];
-            case 5:
-                _d.sent();
-                _d.label = 6;
             case 6:
-                if (!getProfilePicture) return [3 /*break*/, 8];
+                _d.sent();
+                _d.label = 7;
+            case 7:
+                if (!getProfilePicture) return [3 /*break*/, 9];
                 return [4 /*yield*/, cloudinary.v2.uploader.upload(getProfilePicture.tempFilePath, { public_id: uuidv4(), folder: "link-hub" }, function (error, result) {
                         return __awaiter(this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
@@ -110,11 +125,11 @@ var editProfile = function (req, res) { return __awaiter(void 0, void 0, void 0,
                             });
                         });
                     })];
-            case 7:
-                _d.sent();
-                _d.label = 8;
             case 8:
-                if (!getPostPicture) return [3 /*break*/, 10];
+                _d.sent();
+                _d.label = 9;
+            case 9:
+                if (!getPostPicture) return [3 /*break*/, 11];
                 return [4 /*yield*/, cloudinary.v2.uploader.upload(getPostPicture.tempFilePath, { public_id: uuidv4(), folder: "link-hub" }, function (error, result) {
                         return __awaiter(this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
@@ -126,10 +141,10 @@ var editProfile = function (req, res) { return __awaiter(void 0, void 0, void 0,
                             });
                         });
                     })];
-            case 9:
+            case 10:
                 _d.sent();
-                _d.label = 10;
-            case 10: return [4 /*yield*/, prisma.user.update({
+                _d.label = 11;
+            case 11: return [4 /*yield*/, prisma.user.update({
                     where: { id: getIdToken },
                     data: {
                         username: username ? username.toLowerCase() : user === null || user === void 0 ? void 0 : user.username,
@@ -142,18 +157,19 @@ var editProfile = function (req, res) { return __awaiter(void 0, void 0, void 0,
                             : user === null || user === void 0 ? void 0 : user.post_picture,
                     },
                 })];
-            case 11:
+            case 12:
                 updatedUser = _d.sent();
                 res.status(200).json({
                     message: "Success update profile",
                     data: __assign(__assign({}, req.body), { profilePictureCloudinary: profilePictureCloudinary_1, postPictureCloudinary: postPictureCloudinary_1 }),
                 });
-                return [3 /*break*/, 13];
-            case 12:
+                return [3 /*break*/, 14];
+            case 13:
                 error_1 = _d.sent();
+                console.log(error_1.message);
                 res.status(500).json({ message: "Internal server error" });
-                return [3 /*break*/, 13];
-            case 13: return [2 /*return*/];
+                return [3 /*break*/, 14];
+            case 14: return [2 /*return*/];
         }
     });
 }); };
@@ -258,7 +274,7 @@ var getProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                     message: "Success get user profile",
                     data: {
                         profile_picture: user === null || user === void 0 ? void 0 : user.profile_picture,
-                        // post_count: postCount,
+                        username: user === null || user === void 0 ? void 0 : user.username,
                     },
                 });
                 return [3 /*break*/, 3];

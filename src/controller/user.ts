@@ -39,6 +39,21 @@ const editProfile = async (req: Request, res: Response) => {
     let profilePictureCloudinary;
     let postPictureCloudinary;
 
+    const validateUsername = await prisma.user.findMany({
+      where: {
+        username,
+        NOT: {
+          id: getIdToken,
+        },
+      },
+    });
+
+    if (validateUsername.length) {
+      return res
+        .status(400)
+        .json({ message: "That username is already taken" });
+    }
+
     if ((req as any).files) {
       // Delete existing picture if exist
       if (existingPostPicture) {
@@ -115,7 +130,8 @@ const editProfile = async (req: Request, res: Response) => {
         postPictureCloudinary,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -217,7 +233,7 @@ const getProfile = async (req: Request, res: Response) => {
       message: "Success get user profile",
       data: {
         profile_picture: user?.profile_picture,
-        // post_count: postCount,
+        username: user?.username,
       },
     });
   } catch (error) {
