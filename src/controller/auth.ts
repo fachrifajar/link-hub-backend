@@ -5,6 +5,7 @@ const ACC_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REF_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { v4 as uuidv4 } from "uuid";
 const prisma = new PrismaClient();
 
 const register = async (req: Request, res: Response) => {
@@ -29,18 +30,28 @@ const register = async (req: Request, res: Response) => {
       },
     });
 
-    if (existingUser) {
+    const googleAuthValidate = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (googleAuthValidate) {
+      throw { code: 400, message: "Email already registered" };
+    }
+
+    if (existingUser && pwd?.length) {
       throw { code: 400, message: "Email or username is already taken" };
     }
 
     const hashedPwd = await bcrypt.hash(pwd, 10);
+    const generatedUuid = uuidv4();
+    const usernameRandom = `firebase-${generatedUuid}`;
 
     if (!pwd?.length) {
       const newUser: RegisterRequest = await prisma.user.create({
         data: {
           email,
-          username,
-          pwd: "firebase google auth",
+          username: usernameRandom,
+          pwd: "firebase-google-auth",
         },
       });
     } else {

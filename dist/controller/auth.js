@@ -42,16 +42,17 @@ var jwt = require("jsonwebtoken");
 var ACC_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 var REF_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 var client_1 = require("@prisma/client");
+var uuid_1 = require("uuid");
 var prisma = new client_1.PrismaClient();
 var register = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, username, pwd, existingUser, hashedPwd, newUser, newUser, error_1;
+    var _a, email, username, pwd, existingUser, googleAuthValidate, hashedPwd, generatedUuid, usernameRandom, newUser, newUser, error_1;
     var _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
                 _c.label = 1;
             case 1:
-                _c.trys.push([1, 8, , 9]);
+                _c.trys.push([1, 9, , 10]);
                 _a = req.body, email = _a.email, username = _a.username, pwd = _a.pwd;
                 return [4 /*yield*/, prisma.user.findFirst({
                         where: {
@@ -60,46 +61,56 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                     })];
             case 2:
                 existingUser = _c.sent();
-                if (existingUser) {
+                return [4 /*yield*/, prisma.user.findUnique({
+                        where: { email: email },
+                    })];
+            case 3:
+                googleAuthValidate = _c.sent();
+                if (googleAuthValidate) {
+                    throw { code: 400, message: "Email already registered" };
+                }
+                if (existingUser && (pwd === null || pwd === void 0 ? void 0 : pwd.length)) {
                     throw { code: 400, message: "Email or username is already taken" };
                 }
                 return [4 /*yield*/, bcrypt.hash(pwd, 10)];
-            case 3:
+            case 4:
                 hashedPwd = _c.sent();
-                if (!!(pwd === null || pwd === void 0 ? void 0 : pwd.length)) return [3 /*break*/, 5];
+                generatedUuid = (0, uuid_1.v4)();
+                usernameRandom = "firebase-".concat(generatedUuid);
+                if (!!(pwd === null || pwd === void 0 ? void 0 : pwd.length)) return [3 /*break*/, 6];
                 return [4 /*yield*/, prisma.user.create({
                         data: {
                             email: email,
-                            username: username,
-                            pwd: "firebase google auth",
+                            username: usernameRandom,
+                            pwd: "firebase-google-auth",
                         },
                     })];
-            case 4:
+            case 5:
                 newUser = _c.sent();
-                return [3 /*break*/, 7];
-            case 5: return [4 /*yield*/, prisma.user.create({
+                return [3 /*break*/, 8];
+            case 6: return [4 /*yield*/, prisma.user.create({
                     data: {
                         email: email,
                         username: username,
                         pwd: hashedPwd,
                     },
                 })];
-            case 6:
-                newUser = _c.sent();
-                _c.label = 7;
             case 7:
+                newUser = _c.sent();
+                _c.label = 8;
+            case 8:
                 res.status(201).json({
                     message: "Success created new user: ".concat(email),
                 });
-                return [3 /*break*/, 9];
-            case 8:
+                return [3 /*break*/, 10];
+            case 9:
                 error_1 = _c.sent();
                 console.error(error_1);
                 res.status((_b = error_1 === null || error_1 === void 0 ? void 0 : error_1.code) !== null && _b !== void 0 ? _b : 500).json({
                     message: error_1 || "Internal Server Error",
                 });
-                return [3 /*break*/, 9];
-            case 9: return [2 /*return*/];
+                return [3 /*break*/, 10];
+            case 10: return [2 /*return*/];
         }
     });
 }); };
