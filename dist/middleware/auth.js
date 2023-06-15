@@ -23,7 +23,7 @@ var loginValidator = function (req, res, next) {
 var registerValidator = function (req, res, next) {
     var rules = new Validator(req.body, {
         email: "required|email",
-        pwd: "required",
+        // pwd: "required",
         username: "required",
     });
     rules.check().then(function (matched) {

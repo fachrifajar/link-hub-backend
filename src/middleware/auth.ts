@@ -24,7 +24,7 @@ const loginValidator = (req: Request, res: Response, next: NextFunction) => {
 const registerValidator = (req: Request, res: Response, next: NextFunction) => {
   const rules = new Validator(req.body, {
     email: "required|email",
-    pwd: "required",
+    // pwd: "required",
     username: "required",
   });
 
