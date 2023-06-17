@@ -9,6 +9,9 @@
 ALTER TABLE "SocialMedia" DROP CONSTRAINT "SocialMedia_item_id_fkey";
 
 -- AlterTable
+ALTER TABLE "Post" ADD COLUMN     "items" TEXT[] DEFAULT ARRAY[]::TEXT[];
+
+-- AlterTable
 ALTER TABLE "SocialMedia" DROP COLUMN "item_id",
 ADD COLUMN     "post_id" TEXT NOT NULL;
 

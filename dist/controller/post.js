@@ -102,6 +102,7 @@ var getPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                             url: true,
                             created_at: true,
                             updated_at: true,
+                            items: true,
                             SocialMedia: {
                                 select: {
                                     id: true,
@@ -129,14 +130,14 @@ var getPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, title, post_id, bg_color, getIdToken, validatePost, editPost_1, error_3;
+    var _a, title, post_id, bg_color, items, getIdToken, validatePost, editPost_1, error_3;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.label = 1;
             case 1:
                 _b.trys.push([1, 4, , 5]);
-                _a = req.body, title = _a.title, post_id = _a.post_id, bg_color = _a.bg_color;
+                _a = req.body, title = _a.title, post_id = _a.post_id, bg_color = _a.bg_color, items = _a.items;
                 getIdToken = req.id;
                 return [4 /*yield*/, prisma.post.findUnique({
                         where: { id: post_id },
@@ -146,8 +147,9 @@ var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                     })];
             case 2:
                 validatePost = _b.sent();
-                if (!validatePost)
+                if (!validatePost) {
                     return [2 /*return*/, res.status(400).json({ message: "post_id not found" })];
+                }
                 if ((validatePost === null || validatePost === void 0 ? void 0 : validatePost.user_id) !== getIdToken) {
                     return [2 /*return*/, res
                             .status(400)
@@ -158,6 +160,7 @@ var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                         data: {
                             title: title,
                             bg_color: bg_color,
+                            items: { set: items.split(",") },
                         },
                     })];
             case 3:

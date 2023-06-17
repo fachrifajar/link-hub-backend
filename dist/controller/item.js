@@ -35,19 +35,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var client_1 = require("@prisma/client");
 var uuidv4 = require("uuid").v4;
 var prisma = new client_1.PrismaClient();
 var addItem = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, title, url, post_id, getIdToken, validateItem, _i, _b, i, addItem_1, error_1;
+    var _a, title, url, post_id, getIdToken, validateItem, _i, _b, i, addItem_1, post, updatedItems, updatedPost, error_1;
     var _c, _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
             case 0:
                 _e.label = 1;
             case 1:
-                _e.trys.push([1, 4, , 5]);
+                _e.trys.push([1, 7, , 8]);
                 _a = req.body, title = _a.title, url = _a.url, post_id = _a.post_id;
                 getIdToken = req.id;
                 return [4 /*yield*/, prisma.post.findUnique({
@@ -90,16 +99,33 @@ var addItem = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                     })];
             case 3:
                 addItem_1 = _e.sent();
+                return [4 /*yield*/, prisma.post.findUnique({
+                        where: { id: post_id },
+                    })];
+            case 4:
+                post = _e.sent();
+                if (!post) return [3 /*break*/, 6];
+                updatedItems = __spreadArray(__spreadArray([], post === null || post === void 0 ? void 0 : post.items, true), [addItem_1.id], false);
+                return [4 /*yield*/, prisma.post.update({
+                        where: { id: post_id },
+                        data: {
+                            items: updatedItems,
+                        },
+                    })];
+            case 5:
+                updatedPost = _e.sent();
+                _e.label = 6;
+            case 6:
                 res.status(201).json({
                     message: "Success add aew Item, from Post: ".concat(post_id),
                 });
-                return [3 /*break*/, 5];
-            case 4:
+                return [3 /*break*/, 8];
+            case 7:
                 error_1 = _e.sent();
                 console.log(error_1);
                 res.status(500).json({ message: "Internal server error" });
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
+                return [3 /*break*/, 8];
+            case 8: return [2 /*return*/];
         }
     });
 }); };
@@ -152,13 +178,21 @@ var editItem = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 var getItem = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var getIdToken, post_id, post, error_3;
+    var getIdToken, post_id, arrayOfItemsId_1, item, orderedItems, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
+                _a.trys.push([0, 3, , 4]);
                 getIdToken = req.id;
                 post_id = req.params.post_id;
+                return [4 /*yield*/, prisma.post.findUnique({
+                        where: { id: post_id },
+                        select: {
+                            items: true,
+                        },
+                    })];
+            case 1:
+                arrayOfItemsId_1 = _a.sent();
                 return [4 /*yield*/, prisma.item.findMany({
                         where: { post_id: post_id },
                         select: {
@@ -169,61 +203,87 @@ var getItem = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                             updated_at: true,
                         },
                     })];
-            case 1:
-                post = _a.sent();
+            case 2:
+                item = _a.sent();
+                orderedItems = item.sort(function (a, b) {
+                    var _a, _b;
+                    var aIndex = (_a = arrayOfItemsId_1 === null || arrayOfItemsId_1 === void 0 ? void 0 : arrayOfItemsId_1.items.indexOf(a.id)) !== null && _a !== void 0 ? _a : -1;
+                    var bIndex = (_b = arrayOfItemsId_1 === null || arrayOfItemsId_1 === void 0 ? void 0 : arrayOfItemsId_1.items.indexOf(b.id)) !== null && _b !== void 0 ? _b : -1;
+                    return aIndex - bIndex;
+                });
                 res.status(200).json({
                     message: "Success get user Item",
                     data: {
-                        total: post === null || post === void 0 ? void 0 : post.length,
-                        post: post,
+                        total: orderedItems === null || orderedItems === void 0 ? void 0 : orderedItems.length,
+                        item: orderedItems,
                     },
                 });
-                return [3 /*break*/, 3];
-            case 2:
+                return [3 /*break*/, 4];
+            case 3:
                 error_3 = _a.sent();
                 console.log(error_3);
                 res.status(500).json({ message: "Internal server error" });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
 var deleteItem = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var item_id, getIdToken, validatePost, deletePost, error_4;
+    var item_id_1, getIdToken, validateItem, deleteItem_1, validatePost, filteredItems, editPost, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 3, , 4]);
-                item_id = req.params.item_id;
+                _a.trys.push([0, 5, , 6]);
+                item_id_1 = req.params.item_id;
                 getIdToken = req.id;
                 return [4 /*yield*/, prisma.item.findUnique({
-                        where: { id: item_id },
+                        where: { id: item_id_1 },
                         select: {
                             user_id: true,
+                            post_id: true,
                         },
                     })];
             case 1:
-                validatePost = _a.sent();
-                if (!validatePost)
+                validateItem = _a.sent();
+                if (!validateItem)
                     return [2 /*return*/, res.status(400).json({ message: "item_id not found" })];
-                if ((validatePost === null || validatePost === void 0 ? void 0 : validatePost.user_id) !== getIdToken) {
+                if ((validateItem === null || validateItem === void 0 ? void 0 : validateItem.user_id) !== getIdToken) {
                     return [2 /*return*/, res
                             .status(400)
-                            .json({ message: "You cannot delete another user's post." })];
+                            .json({ message: "You cannot delete another user's items." })];
                 }
                 return [4 /*yield*/, prisma.item.delete({
-                        where: { id: item_id },
+                        where: { id: item_id_1 },
                     })];
             case 2:
-                deletePost = _a.sent();
+                deleteItem_1 = _a.sent();
+                return [4 /*yield*/, prisma.post.findUnique({
+                        where: { id: validateItem === null || validateItem === void 0 ? void 0 : validateItem.post_id },
+                        select: {
+                            items: true,
+                        },
+                    })];
+            case 3:
+                validatePost = _a.sent();
+                filteredItems = validatePost === null || validatePost === void 0 ? void 0 : validatePost.items.filter(function (itemId) { return itemId !== item_id_1; });
+                return [4 /*yield*/, prisma.post.update({
+                        where: { id: validateItem === null || validateItem === void 0 ? void 0 : validateItem.post_id },
+                        data: {
+                            items: { set: filteredItems },
+                        },
+                    })];
+            case 4:
+                editPost = _a.sent();
                 res.status(202).json({
                     message: "Success delete Item",
                 });
-                return [3 /*break*/, 4];
-            case 3:
+                return [3 /*break*/, 6];
+            case 5:
                 error_4 = _a.sent();
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                console.log(error_4);
+                res.status(500).json({ message: "Internal server error" });
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
 }); };

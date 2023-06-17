@@ -59,6 +59,7 @@ const getPost = async (req: Request, res: Response) => {
         url: true,
         created_at: true,
         updated_at: true,
+        items: true,
         SocialMedia: {
           select: {
             id: true,
@@ -85,9 +86,11 @@ const editPost = async (req: Request, res: Response) => {
     title: string;
     post_id: string;
     bg_color: string;
+    items: string;
   }
+
   try {
-    const { title, post_id, bg_color }: RequestBody = req.body;
+    const { title, post_id, bg_color, items }: RequestBody = req.body;
     const getIdToken = (req as any).id;
 
     const validatePost = await prisma.post.findUnique({
@@ -97,8 +100,9 @@ const editPost = async (req: Request, res: Response) => {
       },
     });
 
-    if (!validatePost)
+    if (!validatePost) {
       return res.status(400).json({ message: "post_id not found" });
+    }
 
     if (validatePost?.user_id !== getIdToken) {
       return res
@@ -111,6 +115,7 @@ const editPost = async (req: Request, res: Response) => {
       data: {
         title,
         bg_color,
+        items: { set: items.split(",") },
       },
     });
 

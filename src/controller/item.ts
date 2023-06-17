@@ -55,6 +55,21 @@ const addItem = async (req: Request, res: Response) => {
       },
     });
 
+    const post = await prisma.post.findUnique({
+      where: { id: post_id },
+    });
+
+    if (post) {
+      const updatedItems: string[] = [...post?.items, addItem.id];
+
+      const updatedPost = await prisma.post.update({
+        where: { id: post_id },
+        data: {
+          items: updatedItems,
+        },
+      });
+    }
+
     res.status(201).json({
       message: `Success add aew Item, from Post: ${post_id}`,
     });
@@ -114,7 +129,14 @@ const getItem = async (req: Request, res: Response) => {
     const getIdToken = (req as any).id;
     const { post_id } = req.params;
 
-    const post = await prisma.item.findMany({
+    const arrayOfItemsId = await prisma.post.findUnique({
+      where: { id: post_id },
+      select: {
+        items: true,
+      },
+    });
+
+    const item = await prisma.item.findMany({
       where: { post_id: post_id },
       select: {
         id: true,
@@ -125,11 +147,16 @@ const getItem = async (req: Request, res: Response) => {
       },
     });
 
+    const orderedItems = item.sort((a, b) => {
+      const aIndex = arrayOfItemsId?.items.indexOf(a.id) ?? -1;
+      const bIndex = arrayOfItemsId?.items.indexOf(b.id) ?? -1;
+      return aIndex - bIndex;
+    });
     res.status(200).json({
-      message: `Success get user Item`,
+      message: "Success get user Item",
       data: {
-        total: post?.length,
-        post,
+        total: orderedItems?.length,
+        item: orderedItems,
       },
     });
   } catch (error) {
@@ -144,30 +171,52 @@ const deleteItem = async (req: Request, res: Response) => {
 
     const getIdToken = (req as any).id;
 
-    const validatePost = await prisma.item.findUnique({
+    const validateItem = await prisma.item.findUnique({
       where: { id: item_id },
       select: {
         user_id: true,
+        post_id: true,
       },
     });
 
-    if (!validatePost)
+    if (!validateItem)
       return res.status(400).json({ message: "item_id not found" });
 
-    if (validatePost?.user_id !== getIdToken) {
+    if (validateItem?.user_id !== getIdToken) {
       return res
         .status(400)
-        .json({ message: "You cannot delete another user's post." });
+        .json({ message: "You cannot delete another user's items." });
     }
 
-    const deletePost = await prisma.item.delete({
+    const deleteItem = await prisma.item.delete({
       where: { id: item_id },
+    });
+
+    const validatePost = await prisma.post.findUnique({
+      where: { id: validateItem?.post_id },
+      select: {
+        items: true,
+      },
+    });
+
+    const filteredItems = validatePost?.items.filter(
+      (itemId) => itemId !== item_id
+    );
+
+    const editPost = await prisma.post.update({
+      where: { id: validateItem?.post_id },
+      data: {
+        items: { set: filteredItems },
+      },
     });
 
     res.status(202).json({
       message: "Success delete Item",
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 module.exports = { addItem, editItem, getItem, deleteItem };
