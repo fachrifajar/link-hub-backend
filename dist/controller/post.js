@@ -130,14 +130,14 @@ var getPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, title, post_id, bg_color, items, getIdToken, validatePost, updateData, editPost_1, error_3;
+    var _a, title, post_id, bg_color, items, bg, bg_direction, button_option, button_color, button_font_color, font_color, getIdToken, validatePost, updateData, editPost_1, error_3;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.label = 1;
             case 1:
                 _b.trys.push([1, 4, , 5]);
-                _a = req.body, title = _a.title, post_id = _a.post_id, bg_color = _a.bg_color, items = _a.items;
+                _a = req.body, title = _a.title, post_id = _a.post_id, bg_color = _a.bg_color, items = _a.items, bg = _a.bg, bg_direction = _a.bg_direction, button_option = _a.button_option, button_color = _a.button_color, button_font_color = _a.button_font_color, font_color = _a.font_color;
                 getIdToken = req.id;
                 return [4 /*yield*/, prisma.post.findUnique({
                         where: { id: post_id },
@@ -164,6 +164,24 @@ var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                 }
                 if (items) {
                     updateData.items = items.split(",");
+                }
+                if (bg) {
+                    updateData.bg = bg;
+                }
+                if (bg_direction) {
+                    updateData.bg_direction = bg_direction;
+                }
+                if (button_option) {
+                    updateData.button_option = button_option;
+                }
+                if (button_color) {
+                    updateData.button_color = button_color;
+                }
+                if (button_font_color) {
+                    updateData.button_font_color = button_font_color;
+                }
+                if (font_color) {
+                    updateData.font_color = font_color;
                 }
                 return [4 /*yield*/, prisma.post.update({
                         where: { id: post_id },

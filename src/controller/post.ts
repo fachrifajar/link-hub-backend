@@ -85,12 +85,29 @@ const editPost = async (req: Request, res: Response) => {
   interface RequestBody {
     title: string;
     post_id: string;
-    bg_color: string;
-    items?: string; 
+    bg_color?: string;
+    items?: string;
+    bg?: string;
+    bg_direction?: string;
+    button_option?: string;
+    button_color?: string;
+    button_font_color?: string;
+    font_color?: string;
   }
 
   try {
-    const { title, post_id, bg_color, items }: RequestBody = req.body;
+    const {
+      title,
+      post_id,
+      bg_color,
+      items,
+      bg,
+      bg_direction,
+      button_option,
+      button_color,
+      button_font_color,
+      font_color,
+    }: RequestBody = req.body;
     const getIdToken = (req as any).id;
 
     const validatePost = await prisma.post.findUnique({
@@ -110,7 +127,17 @@ const editPost = async (req: Request, res: Response) => {
         .json({ message: "You cannot edit another user's post." });
     }
 
-    const updateData: { title?: string; bg_color?: string; items?: string[] } = {};
+    const updateData: {
+      title?: string;
+      bg_color?: string;
+      items?: string[];
+      bg?: string;
+      bg_direction?: string;
+      button_option?: string;
+      button_color?: string;
+      button_font_color?: string;
+      font_color?: string;
+    } = {};
 
     if (title) {
       updateData.title = title;
@@ -120,6 +147,24 @@ const editPost = async (req: Request, res: Response) => {
     }
     if (items) {
       updateData.items = items.split(",");
+    }
+    if (bg) {
+      updateData.bg = bg;
+    }
+    if (bg_direction) {
+      updateData.bg_direction = bg_direction;
+    }
+    if (button_option) {
+      updateData.button_option = button_option;
+    }
+    if (button_color) {
+      updateData.button_color = button_color;
+    }
+    if (button_font_color) {
+      updateData.button_font_color = button_font_color;
+    }
+    if (font_color) {
+      updateData.font_color = font_color;
     }
 
     const editPost = await prisma.post.update({
@@ -135,8 +180,6 @@ const editPost = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
-
 
 const deletePost = async (req: Request, res: Response) => {
   try {

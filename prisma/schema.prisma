@@ -52,17 +52,23 @@ model User {
 }
 
 model Post {
-  id          String        @id @unique @default(cuid())
-  title       String
-  bg_color    String?
-  url         String        @unique @default(cuid())
-  user        User          @relation(fields: [user_id], references: [id])
-  user_id     String
-  created_at  DateTime      @default(now())
-  updated_at  DateTime      @default(now()) @updatedAt
-  Item        Item[]
-  items       String[]      @default([])
-  SocialMedia SocialMedia[]
+  id                String        @id @unique @default(cuid())
+  title             String
+  bg_color          String        @default("#FFFFFF")
+  bg                String        @default("flat")
+  bg_direction      String        @default("gradientUp")
+  button_option     String        @default("fill")
+  button_color      String        @default("#e0e0f4")
+  button_font_color String        @default("#000000")
+  font_color        String        @default("#000000")
+  url               String        @unique @default(cuid())
+  user              User          @relation(fields: [user_id], references: [id])
+  user_id           String
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @default(now()) @updatedAt
+  Item              Item[]
+  items             String[]      @default([])
+  SocialMedia       SocialMedia[]
 }
 
 model Item {
