@@ -155,12 +155,15 @@ var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                             .status(400)
                             .json({ message: "You cannot edit another user's post." })];
                 }
-                updateData = {
-                    title: title,
-                    bg_color: bg_color,
-                };
-                if (items !== "") {
-                    updateData.items = { set: items === null || items === void 0 ? void 0 : items.split(",") };
+                updateData = {};
+                if (title) {
+                    updateData.title = title;
+                }
+                if (bg_color) {
+                    updateData.bg_color = bg_color;
+                }
+                if (items) {
+                    updateData.items = items.split(",");
                 }
                 return [4 /*yield*/, prisma.post.update({
                         where: { id: post_id },

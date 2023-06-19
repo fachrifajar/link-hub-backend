@@ -86,7 +86,7 @@ const editPost = async (req: Request, res: Response) => {
     title: string;
     post_id: string;
     bg_color: string;
-    items: string;
+    items?: string; 
   }
 
   try {
@@ -110,13 +110,16 @@ const editPost = async (req: Request, res: Response) => {
         .json({ message: "You cannot edit another user's post." });
     }
 
-    const updateData: any = {
-      title,
-      bg_color,
-    };
+    const updateData: { title?: string; bg_color?: string; items?: string[] } = {};
 
-    if (items !== "") {
-      updateData.items = { set: items?.split(",") };
+    if (title) {
+      updateData.title = title;
+    }
+    if (bg_color) {
+      updateData.bg_color = bg_color;
+    }
+    if (items) {
+      updateData.items = items.split(",");
     }
 
     const editPost = await prisma.post.update({
@@ -132,6 +135,7 @@ const editPost = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 
 const deletePost = async (req: Request, res: Response) => {
