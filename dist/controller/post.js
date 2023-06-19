@@ -130,7 +130,7 @@ var getPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, title, post_id, bg_color, items, getIdToken, validatePost, editPost_1, error_3;
+    var _a, title, post_id, bg_color, items, getIdToken, validatePost, updateData, editPost_1, error_3;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -155,13 +155,16 @@ var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                             .status(400)
                             .json({ message: "You cannot edit another user's post." })];
                 }
+                updateData = {
+                    title: title,
+                    bg_color: bg_color,
+                };
+                if (items !== "") {
+                    updateData.items = { set: items === null || items === void 0 ? void 0 : items.split(",") };
+                }
                 return [4 /*yield*/, prisma.post.update({
                         where: { id: post_id },
-                        data: {
-                            title: title,
-                            bg_color: bg_color,
-                            items: { set: items.split(",") },
-                        },
+                        data: updateData,
                     })];
             case 3:
                 editPost_1 = _b.sent();
