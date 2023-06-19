@@ -45,7 +45,7 @@ const register = async (req: Request, res: Response) => {
     const hashedPwd = await bcrypt.hash(pwd, 10);
     const generatedUuid = uuidv4();
     const usernameRandom = `firebase-${generatedUuid}`;
-    const secretPwd = process.env.SECRET_PWD || ""
+    const secretPwd = process.env.SECRET_PWD || "";
     if (!pwd?.length) {
       const newUser = await prisma.user.create({
         data: {
@@ -125,6 +125,7 @@ const login = async (req: Request, res: Response) => {
       data: {
         id: user?.id,
         username: user?.username,
+        img: user?.profile_picture,
         accessToken,
       },
     });
