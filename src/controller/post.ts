@@ -55,7 +55,14 @@ const getPost = async (req: Request, res: Response) => {
       select: {
         id: true,
         title: true,
+        use_title: true,
         bg_color: true,
+        bg: true,
+        bg_direction: true,
+        button_option: true,
+        button_color: true,
+        button_font_color: true,
+        font_color: true,
         url: true,
         created_at: true,
         updated_at: true,
@@ -142,8 +149,8 @@ const editPost = async (req: Request, res: Response) => {
       use_title?: string;
     } = {};
 
-    console.log(use_title)
-    console.log(typeof use_title)
+    console.log(use_title);
+    console.log(typeof use_title);
 
     if (title) {
       updateData.title = title;
