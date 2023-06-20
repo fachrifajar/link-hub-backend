@@ -93,6 +93,7 @@ const editPost = async (req: Request, res: Response) => {
     button_color?: string;
     button_font_color?: string;
     font_color?: string;
+    use_title?: string;
   }
 
   try {
@@ -107,6 +108,7 @@ const editPost = async (req: Request, res: Response) => {
       button_color,
       button_font_color,
       font_color,
+      use_title,
     }: RequestBody = req.body;
     const getIdToken = (req as any).id;
 
@@ -137,7 +139,11 @@ const editPost = async (req: Request, res: Response) => {
       button_color?: string;
       button_font_color?: string;
       font_color?: string;
+      use_title?: string;
     } = {};
+
+    console.log(use_title)
+    console.log(typeof use_title)
 
     if (title) {
       updateData.title = title;
@@ -165,6 +171,9 @@ const editPost = async (req: Request, res: Response) => {
     }
     if (font_color) {
       updateData.font_color = font_color;
+    }
+    if (use_title) {
+      updateData.use_title = use_title;
     }
 
     const editPost = await prisma.post.update({
