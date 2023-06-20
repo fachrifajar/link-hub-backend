@@ -144,31 +144,31 @@ const getItem = async (req: Request, res: Response) => {
         url: true,
         created_at: true,
         updated_at: true,
-        post: {
-          select: {
-            id: true,
-            title: true,
-            use_title: true,
-            bg_color: true,
-            bg: true,
-            bg_direction: true,
-            button_option: true,
-            button_color: true,
-            button_font_color: true,
-            font_color: true,
-            url: true,
-            created_at: true,
-            updated_at: true,
-            items: true,
-            SocialMedia: {
-              select: {
-                id: true,
-                platform: true,
-                url: true,
-              },
-            },
-          },
-        },
+        // post: {
+        //   select: {
+        //     id: true,
+        //     title: true,
+        //     use_title: true,
+        //     bg_color: true,
+        //     bg: true,
+        //     bg_direction: true,
+        //     button_option: true,
+        //     button_color: true,
+        //     button_font_color: true,
+        //     font_color: true,
+        //     url: true,
+        //     created_at: true,
+        //     updated_at: true,
+        //     items: true,
+        //     SocialMedia: {
+        //       select: {
+        //         id: true,
+        //         platform: true,
+        //         url: true,
+        //       },
+        //     },
+        //   },
+        // },
       },
     });
 
