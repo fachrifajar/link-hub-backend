@@ -17,6 +17,7 @@ ADD COLUMN     "button_font_color" TEXT NOT NULL DEFAULT '#000000',
 ADD COLUMN     "button_option" TEXT NOT NULL DEFAULT 'fill',
 ADD COLUMN     "font_color" TEXT NOT NULL DEFAULT '#000000',
 ADD COLUMN     "items" TEXT[] DEFAULT ARRAY[]::TEXT[],
+ADD COLUMN     "use_title" TEXT NOT NULL DEFAULT '1',
 ALTER COLUMN "bg_color" SET NOT NULL,
 ALTER COLUMN "bg_color" SET DEFAULT '#FFFFFF';
 
