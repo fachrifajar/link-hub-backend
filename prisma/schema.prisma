@@ -58,7 +58,7 @@ model Post {
   bg_color          String        @default("#FFFFFF")
   bg                String        @default("flat")
   bg_direction      String        @default("gradientUp")
-  button_option     String        @default("fill")
+  button_option     String        @default("fill-50px")
   button_color      String        @default("#e0e0f4")
   button_font_color String        @default("#000000")
   font_color        String        @default("#000000")
