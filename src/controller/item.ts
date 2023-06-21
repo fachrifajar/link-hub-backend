@@ -40,11 +40,11 @@ const addItem = async (req: Request, res: Response) => {
         .json({ message: "You cannot add item from another user's post" });
     }
 
-    for (const i of validateItem?.Item) {
-      if (i?.title?.toLowerCase() === title.toLowerCase()) {
-        return res.status(400).json({ message: "Title already exists." });
-      }
-    }
+    // for (const i of validateItem?.Item) {
+    //   if (i?.title?.toLowerCase() === title.toLowerCase()) {
+    //     return res.status(400).json({ message: "Title already exists." });
+    //   }
+    // }
 
     const addItem = await prisma.item.create({
       data: {

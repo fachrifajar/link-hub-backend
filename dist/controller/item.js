@@ -49,14 +49,14 @@ var client_1 = require("@prisma/client");
 var uuidv4 = require("uuid").v4;
 var prisma = new client_1.PrismaClient();
 var addItem = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, title, url, post_id, getIdToken, validateItem, _i, _b, i, addItem_1, post, updatedItems, updatedPost, error_1;
-    var _c, _d;
-    return __generator(this, function (_e) {
-        switch (_e.label) {
+    var _a, title, url, post_id, getIdToken, validateItem, addItem_1, post, updatedItems, updatedPost, error_1;
+    var _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
-                _e.label = 1;
+                _c.label = 1;
             case 1:
-                _e.trys.push([1, 7, , 8]);
+                _c.trys.push([1, 7, , 8]);
                 _a = req.body, title = _a.title, url = _a.url, post_id = _a.post_id;
                 getIdToken = req.id;
                 return [4 /*yield*/, prisma.post.findUnique({
@@ -71,10 +71,10 @@ var addItem = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                         },
                     })];
             case 2:
-                validateItem = _e.sent();
+                validateItem = _c.sent();
                 if (!validateItem)
                     return [2 /*return*/, res.status(400).json({ message: "post_id not found" })];
-                if (((_c = validateItem === null || validateItem === void 0 ? void 0 : validateItem.Item) === null || _c === void 0 ? void 0 : _c.length) === 10)
+                if (((_b = validateItem === null || validateItem === void 0 ? void 0 : validateItem.Item) === null || _b === void 0 ? void 0 : _b.length) === 10)
                     return [2 /*return*/, res.status(400).json({
                             message: "You have reached the maximum limit of items. Only 10 items are allowed per post.",
                         })];
@@ -82,12 +82,6 @@ var addItem = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                     return [2 /*return*/, res
                             .status(400)
                             .json({ message: "You cannot add item from another user's post" })];
-                }
-                for (_i = 0, _b = validateItem === null || validateItem === void 0 ? void 0 : validateItem.Item; _i < _b.length; _i++) {
-                    i = _b[_i];
-                    if (((_d = i === null || i === void 0 ? void 0 : i.title) === null || _d === void 0 ? void 0 : _d.toLowerCase()) === title.toLowerCase()) {
-                        return [2 /*return*/, res.status(400).json({ message: "Title already exists." })];
-                    }
                 }
                 return [4 /*yield*/, prisma.item.create({
                         data: {
@@ -98,12 +92,12 @@ var addItem = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                         },
                     })];
             case 3:
-                addItem_1 = _e.sent();
+                addItem_1 = _c.sent();
                 return [4 /*yield*/, prisma.post.findUnique({
                         where: { id: post_id },
                     })];
             case 4:
-                post = _e.sent();
+                post = _c.sent();
                 if (!post) return [3 /*break*/, 6];
                 updatedItems = __spreadArray(__spreadArray([], post === null || post === void 0 ? void 0 : post.items, true), [addItem_1.id], false);
                 return [4 /*yield*/, prisma.post.update({
@@ -113,15 +107,15 @@ var addItem = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                         },
                     })];
             case 5:
-                updatedPost = _e.sent();
-                _e.label = 6;
+                updatedPost = _c.sent();
+                _c.label = 6;
             case 6:
                 res.status(201).json({
                     message: "Success add aew Item, from Post: ".concat(post_id),
                 });
                 return [3 /*break*/, 8];
             case 7:
-                error_1 = _e.sent();
+                error_1 = _c.sent();
                 console.log(error_1);
                 res.status(500).json({ message: "Internal server error" });
                 return [3 /*break*/, 8];
