@@ -31,10 +31,10 @@ const addSocmed = async (req: Request, res: Response) => {
           "You have reached the maximum limit of Social Media. Only 5 platform are allowed per Post's.",
       });
 
-    if (validateSocmed?.[0]?.post?.user_id !== getIdToken)
-      return res
-        .status(400)
-        .json({ message: "You cannot add another user's platform." });
+    // if (validateSocmed?.[0]?.post?.user_id !== getIdToken)
+    //   return res
+    //     .status(400)
+    //     .json({ message: "You cannot add another user's platform." });
 
     const addSocmed = await prisma.socialMedia.create({
       data: {
