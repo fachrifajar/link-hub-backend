@@ -39,32 +39,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var client_1 = require("@prisma/client");
 var prisma = new client_1.PrismaClient();
 var addSocmed = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, platform, url, post_id, getIdToken, validateSocmed, addSocmed_1, error_1;
+    var _a, platform, url, post_id, getIdToken, addSocmed_1, error_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.label = 1;
             case 1:
-                _b.trys.push([1, 4, , 5]);
+                _b.trys.push([1, 3, , 4]);
                 _a = req.body, platform = _a.platform, url = _a.url, post_id = _a.post_id;
                 getIdToken = req.id;
-                return [4 /*yield*/, prisma.socialMedia.findMany({
-                        where: { post_id: post_id },
-                        select: {
-                            platform: true,
-                            post: {
-                                select: {
-                                    user_id: true,
-                                },
-                            },
-                        },
-                    })];
-            case 2:
-                validateSocmed = _b.sent();
-                if ((validateSocmed === null || validateSocmed === void 0 ? void 0 : validateSocmed.length) === 5)
-                    return [2 /*return*/, res.status(400).json({
-                            message: "You have reached the maximum limit of Social Media. Only 5 platform are allowed per Post's.",
-                        })];
                 return [4 /*yield*/, prisma.socialMedia.create({
                         data: {
                             platform: platform,
@@ -76,18 +59,18 @@ var addSocmed = function (req, res) { return __awaiter(void 0, void 0, void 0, f
                             platform: true,
                         },
                     })];
-            case 3:
+            case 2:
                 addSocmed_1 = _b.sent();
                 res.status(201).json({
                     message: "Success add new Platform: ".concat(addSocmed_1 === null || addSocmed_1 === void 0 ? void 0 : addSocmed_1.platform),
                 });
-                return [3 /*break*/, 5];
-            case 4:
+                return [3 /*break*/, 4];
+            case 3:
                 error_1 = _b.sent();
                 console.log(error_1);
                 res.status(500).json({ message: "Internal server error" });
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };

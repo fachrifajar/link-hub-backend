@@ -13,23 +13,23 @@ const addSocmed = async (req: Request, res: Response) => {
     const { platform, url, post_id }: RequestBody = req.body;
     const getIdToken = (req as any).id;
 
-    const validateSocmed = await prisma.socialMedia.findMany({
-      where: { post_id: post_id },
-      select: {
-        platform: true,
-        post: {
-          select: {
-            user_id: true,
-          },
-        },
-      },
-    });
+    // const validateSocmed = await prisma.socialMedia.findMany({
+    //   where: { post_id: post_id },
+    //   select: {
+    //     platform: true,
+    //     post: {
+    //       select: {
+    //         user_id: true,
+    //       },
+    //     },
+    //   },
+    // });
 
-    if (validateSocmed?.length === 5)
-      return res.status(400).json({
-        message:
-          "You have reached the maximum limit of Social Media. Only 5 platform are allowed per Post's.",
-      });
+    // if (validateSocmed?.length === 5)
+    //   return res.status(400).json({
+    //     message:
+    //       "You have reached the maximum limit of Social Media. Only 5 platform are allowed per Post's.",
+    //   });
 
     // if (validateSocmed?.[0]?.post?.user_id !== getIdToken)
     //   return res
