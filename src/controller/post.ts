@@ -100,7 +100,7 @@ const editPost = async (req: Request, res: Response) => {
     button_color?: string;
     button_font_color?: string;
     font_color?: string;
-    use_title?: string;
+    use_title?: boolean;
   }
 
   try {
@@ -146,11 +146,10 @@ const editPost = async (req: Request, res: Response) => {
       button_color?: string;
       button_font_color?: string;
       font_color?: string;
-      use_title?: string;
+      use_title?: boolean;
     } = {};
 
-    console.log(use_title);
-    console.log(typeof use_title);
+
 
     if (title) {
       updateData.title = title;

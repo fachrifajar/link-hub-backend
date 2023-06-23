@@ -54,7 +54,7 @@ model User {
 model Post {
   id                String        @id @unique @default(cuid())
   title             String
-  use_title         String        @default("1")
+  use_title         Boolean       @default(true)
   bg_color          String        @default("#FFFFFF")
   bg                String        @default("flat")
   bg_direction      String        @default("gradientUp")
