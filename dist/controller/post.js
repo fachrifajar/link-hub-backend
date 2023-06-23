@@ -163,8 +163,6 @@ var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                             .json({ message: "You cannot edit another user's post." })];
                 }
                 updateData = {};
-                console.log(use_title);
-                console.log(typeof use_title);
                 if (title) {
                     updateData.title = title;
                 }
