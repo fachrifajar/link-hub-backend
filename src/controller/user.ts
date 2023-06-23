@@ -48,7 +48,7 @@ const editProfile = async (req: Request, res: Response) => {
       },
     });
 
-    if (validateUsername.length) {
+    if (username && validateUsername.length) {
       return res
         .status(400)
         .json({ message: "That username is already taken" });

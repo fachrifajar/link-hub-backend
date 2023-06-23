@@ -87,7 +87,7 @@ var editProfile = function (req, res) { return __awaiter(void 0, void 0, void 0,
                     })];
             case 3:
                 validateUsername = _d.sent();
-                if (validateUsername.length) {
+                if (username && validateUsername.length) {
                     return [2 /*return*/, res
                             .status(400)
                             .json({ message: "That username is already taken" })];
