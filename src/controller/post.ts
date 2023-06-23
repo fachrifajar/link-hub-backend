@@ -49,40 +49,88 @@ const addPost = async (req: Request, res: Response) => {
 const getPost = async (req: Request, res: Response) => {
   try {
     const getIdToken = (req as any).id;
+    const { post_id } = req?.params;
 
-    const post = await prisma.post.findMany({
-      where: { user_id: getIdToken },
-      select: {
-        id: true,
-        title: true,
-        use_title: true,
-        bg_color: true,
-        bg: true,
-        bg_direction: true,
-        button_option: true,
-        button_color: true,
-        button_font_color: true,
-        font_color: true,
-        url: true,
-        created_at: true,
-        updated_at: true,
-        items: true,
-        SocialMedia: {
-          select: {
-            id: true,
-            platform: true,
-            url: true,
+    let post;
+
+    if (!post_id) {
+      post = await prisma.post.findMany({
+        where: { user_id: getIdToken },
+        select: {
+          id: true,
+          title: true,
+          use_title: true,
+          bg_color: true,
+          bg: true,
+          bg_direction: true,
+          button_option: true,
+          button_color: true,
+          button_font_color: true,
+          font_color: true,
+          url: true,
+          created_at: true,
+          updated_at: true,
+          items: true,
+          SocialMedia: {
+            select: {
+              id: true,
+              platform: true,
+              url: true,
+            },
           },
         },
-      },
-    });
+      });
 
-    res.status(200).json({
-      message: `Success get user Post`,
-      data: {
-        post,
-      },
-    });
+      res.status(200).json({
+        message: `Success get user Post`,
+        data: {
+          post,
+        },
+      });
+    } else {
+      post = await prisma.post.findMany({
+        where: { id: post_id },
+        select: {
+          id: true,
+          title: true,
+          use_title: true,
+          bg_color: true,
+          bg: true,
+          bg_direction: true,
+          button_option: true,
+          button_color: true,
+          button_font_color: true,
+          font_color: true,
+          url: true,
+          created_at: true,
+          updated_at: true,
+          items: true,
+          SocialMedia: {
+            select: {
+              id: true,
+              platform: true,
+              url: true,
+            },
+          },
+          Item: {
+            select: {
+              id: true,
+              title: true,
+              url: true,
+              created_at: true,
+              updated_at: true,
+            },
+          },
+        },
+      });
+
+      res.status(200).json({
+        message: `Success get user Post`,
+        data: {
+          post,
+        },
+      });
+    }
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -148,8 +196,6 @@ const editPost = async (req: Request, res: Response) => {
       font_color?: string;
       use_title?: boolean;
     } = {};
-
-
 
     if (title) {
       updateData.title = title;
