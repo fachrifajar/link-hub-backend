@@ -87,15 +87,12 @@ var addPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 var getPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var getIdToken, post_id, post, error_2;
+    var getIdToken, post, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 5, , 6]);
+                _a.trys.push([0, 2, , 3]);
                 getIdToken = req.id;
-                post_id = (req === null || req === void 0 ? void 0 : req.params).post_id;
-                post = void 0;
-                if (!!post_id) return [3 /*break*/, 2];
                 return [4 /*yield*/, prisma.post.findMany({
                         where: { user_id: getIdToken },
                         select: {
@@ -130,43 +127,58 @@ var getPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                         post: post,
                     },
                 });
-                return [3 /*break*/, 4];
-            case 2: return [4 /*yield*/, prisma.post.findMany({
-                    where: { id: post_id },
-                    select: {
-                        id: true,
-                        title: true,
-                        use_title: true,
-                        bg_color: true,
-                        bg: true,
-                        bg_direction: true,
-                        button_option: true,
-                        button_color: true,
-                        button_font_color: true,
-                        font_color: true,
-                        url: true,
-                        created_at: true,
-                        updated_at: true,
-                        items: true,
-                        SocialMedia: {
-                            select: {
-                                id: true,
-                                platform: true,
-                                url: true,
+                return [3 /*break*/, 3];
+            case 2:
+                error_2 = _a.sent();
+                res.status(500).json({ message: "Internal server error" });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+var getPostSearch = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var post_id, post, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                post_id = (req === null || req === void 0 ? void 0 : req.params).post_id;
+                return [4 /*yield*/, prisma.post.findMany({
+                        where: { id: post_id },
+                        select: {
+                            id: true,
+                            title: true,
+                            use_title: true,
+                            bg_color: true,
+                            bg: true,
+                            bg_direction: true,
+                            button_option: true,
+                            button_color: true,
+                            button_font_color: true,
+                            font_color: true,
+                            url: true,
+                            created_at: true,
+                            updated_at: true,
+                            items: true,
+                            SocialMedia: {
+                                select: {
+                                    id: true,
+                                    platform: true,
+                                    url: true,
+                                },
+                            },
+                            Item: {
+                                select: {
+                                    id: true,
+                                    title: true,
+                                    url: true,
+                                    created_at: true,
+                                    updated_at: true,
+                                },
                             },
                         },
-                        Item: {
-                            select: {
-                                id: true,
-                                title: true,
-                                url: true,
-                                created_at: true,
-                                updated_at: true,
-                            },
-                        },
-                    },
-                })];
-            case 3:
+                    })];
+            case 1:
                 post = _a.sent();
                 res.status(200).json({
                     message: "Success get user Post",
@@ -174,18 +186,17 @@ var getPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                         post: post,
                     },
                 });
-                _a.label = 4;
-            case 4: return [3 /*break*/, 6];
-            case 5:
-                error_2 = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                error_3 = _a.sent();
                 res.status(500).json({ message: "Internal server error" });
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, title, post_id, bg_color, items, bg, bg_direction, button_option, button_color, button_font_color, font_color, use_title, getIdToken, validatePost, updateData, editPost_1, error_3;
+    var _a, title, post_id, bg_color, items, bg, bg_direction, button_option, button_color, button_font_color, font_color, use_title, getIdToken, validatePost, updateData, editPost_1, error_4;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -252,8 +263,8 @@ var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                 });
                 return [3 /*break*/, 5];
             case 4:
-                error_3 = _b.sent();
-                console.log(error_3);
+                error_4 = _b.sent();
+                console.log(error_4);
                 res.status(500).json({ message: "Internal server error" });
                 return [3 /*break*/, 5];
             case 5: return [2 /*return*/];
@@ -261,7 +272,7 @@ var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 var deletePost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var post_id, getIdToken, validatePost, deletePost_1, deleteItems, deletePost_2, error_4;
+    var post_id, getIdToken, validatePost, deletePost_1, deleteItems, deletePost_2, error_5;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -314,13 +325,13 @@ var deletePost = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 });
                 return [3 /*break*/, 8];
             case 7:
-                error_4 = _b.sent();
-                console.log(error_4);
+                error_5 = _b.sent();
+                console.log(error_5);
                 res.status(500).json({ message: "Internal server error" });
                 return [3 /*break*/, 8];
             case 8: return [2 /*return*/];
         }
     });
 }); };
-module.exports = { addPost: addPost, getPost: getPost, editPost: editPost, deletePost: deletePost };
+module.exports = { addPost: addPost, getPost: getPost, editPost: editPost, deletePost: deletePost, getPostSearch: getPostSearch };
 //# sourceMappingURL=post.js.map

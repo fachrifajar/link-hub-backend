@@ -49,88 +49,91 @@ const addPost = async (req: Request, res: Response) => {
 const getPost = async (req: Request, res: Response) => {
   try {
     const getIdToken = (req as any).id;
+
+    const post = await prisma.post.findMany({
+      where: { user_id: getIdToken },
+      select: {
+        id: true,
+        title: true,
+        use_title: true,
+        bg_color: true,
+        bg: true,
+        bg_direction: true,
+        button_option: true,
+        button_color: true,
+        button_font_color: true,
+        font_color: true,
+        url: true,
+        created_at: true,
+        updated_at: true,
+        items: true,
+        SocialMedia: {
+          select: {
+            id: true,
+            platform: true,
+            url: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json({
+      message: `Success get user Post`,
+      data: {
+        post,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getPostSearch = async (req: Request, res: Response) => {
+  try {
     const { post_id } = req?.params;
 
-    let post;
-
-    if (!post_id) {
-      post = await prisma.post.findMany({
-        where: { user_id: getIdToken },
-        select: {
-          id: true,
-          title: true,
-          use_title: true,
-          bg_color: true,
-          bg: true,
-          bg_direction: true,
-          button_option: true,
-          button_color: true,
-          button_font_color: true,
-          font_color: true,
-          url: true,
-          created_at: true,
-          updated_at: true,
-          items: true,
-          SocialMedia: {
-            select: {
-              id: true,
-              platform: true,
-              url: true,
-            },
+    const post = await prisma.post.findMany({
+      where: { id: post_id },
+      select: {
+        id: true,
+        title: true,
+        use_title: true,
+        bg_color: true,
+        bg: true,
+        bg_direction: true,
+        button_option: true,
+        button_color: true,
+        button_font_color: true,
+        font_color: true,
+        url: true,
+        created_at: true,
+        updated_at: true,
+        items: true,
+        SocialMedia: {
+          select: {
+            id: true,
+            platform: true,
+            url: true,
           },
         },
-      });
-
-      res.status(200).json({
-        message: `Success get user Post`,
-        data: {
-          post,
-        },
-      });
-    } else {
-      post = await prisma.post.findMany({
-        where: { id: post_id },
-        select: {
-          id: true,
-          title: true,
-          use_title: true,
-          bg_color: true,
-          bg: true,
-          bg_direction: true,
-          button_option: true,
-          button_color: true,
-          button_font_color: true,
-          font_color: true,
-          url: true,
-          created_at: true,
-          updated_at: true,
-          items: true,
-          SocialMedia: {
-            select: {
-              id: true,
-              platform: true,
-              url: true,
-            },
-          },
-          Item: {
-            select: {
-              id: true,
-              title: true,
-              url: true,
-              created_at: true,
-              updated_at: true,
-            },
+        Item: {
+          select: {
+            id: true,
+            title: true,
+            url: true,
+            created_at: true,
+            updated_at: true,
           },
         },
-      });
+      },
+    });
 
-      res.status(200).json({
-        message: `Success get user Post`,
-        data: {
-          post,
-        },
-      });
-    }
+    res.status(200).json({
+      message: `Success get user Post`,
+      data: {
+        post,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -291,4 +294,4 @@ const deletePost = async (req: Request, res: Response) => {
   }
 };
 
-module.exports = { addPost, getPost, editPost, deletePost };
+module.exports = { addPost, getPost, editPost, deletePost, getPostSearch };
