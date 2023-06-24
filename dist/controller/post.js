@@ -249,7 +249,7 @@ var editPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                 if (font_color) {
                     updateData.font_color = font_color;
                 }
-                if (use_title) {
+                if (use_title !== undefined) {
                     updateData.use_title = use_title;
                 }
                 return [4 /*yield*/, prisma.post.update({

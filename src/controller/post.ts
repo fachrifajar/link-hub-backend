@@ -227,7 +227,7 @@ const editPost = async (req: Request, res: Response) => {
     if (font_color) {
       updateData.font_color = font_color;
     }
-    if (use_title) {
+    if (use_title !== undefined) {
       updateData.use_title = use_title;
     }
 
