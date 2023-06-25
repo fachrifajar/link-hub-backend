@@ -109,6 +109,7 @@ const getPostSearch = async (req: Request, res: Response) => {
         created_at: true,
         updated_at: true,
         items: true,
+        user_id: true,
         SocialMedia: {
           select: {
             id: true,
@@ -128,10 +129,21 @@ const getPostSearch = async (req: Request, res: Response) => {
       },
     });
 
+    const getUserId = post[0]?.user_id;
+
+    const user = await prisma.user.findUnique({
+      where: { id: getUserId },
+      select: {
+        username: true,
+        profile_picture: true,
+      },
+    });
+
     res.status(200).json({
       message: `Success get user Post`,
       data: {
         post,
+        user,
       },
     });
   } catch (error) {

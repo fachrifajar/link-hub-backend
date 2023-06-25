@@ -137,11 +137,12 @@ var getPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 var getPostSearch = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var post_id, post, error_3;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var post_id, post, getUserId, user, error_3;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
+                _b.trys.push([0, 3, , 4]);
                 post_id = (req === null || req === void 0 ? void 0 : req.params).post_id;
                 return [4 /*yield*/, prisma.post.findMany({
                         where: { id: post_id },
@@ -160,6 +161,7 @@ var getPostSearch = function (req, res) { return __awaiter(void 0, void 0, void 
                             created_at: true,
                             updated_at: true,
                             items: true,
+                            user_id: true,
                             SocialMedia: {
                                 select: {
                                     id: true,
@@ -179,19 +181,30 @@ var getPostSearch = function (req, res) { return __awaiter(void 0, void 0, void 
                         },
                     })];
             case 1:
-                post = _a.sent();
+                post = _b.sent();
+                getUserId = (_a = post[0]) === null || _a === void 0 ? void 0 : _a.user_id;
+                return [4 /*yield*/, prisma.user.findUnique({
+                        where: { id: getUserId },
+                        select: {
+                            username: true,
+                            profile_picture: true,
+                        },
+                    })];
+            case 2:
+                user = _b.sent();
                 res.status(200).json({
                     message: "Success get user Post",
                     data: {
                         post: post,
+                        user: user,
                     },
                 });
-                return [3 /*break*/, 3];
-            case 2:
-                error_3 = _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                error_3 = _b.sent();
                 res.status(500).json({ message: "Internal server error" });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
