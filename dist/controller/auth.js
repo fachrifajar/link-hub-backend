@@ -161,7 +161,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                     data: {
                         id: user === null || user === void 0 ? void 0 : user.id,
                         username: user === null || user === void 0 ? void 0 : user.username,
-                        img: user === null || user === void 0 ? void 0 : user.profile_picture,
+                        profile_picture: user === null || user === void 0 ? void 0 : user.profile_picture,
                         accessToken: accessToken,
                     },
                 });

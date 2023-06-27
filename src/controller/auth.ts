@@ -125,7 +125,7 @@ const login = async (req: Request, res: Response) => {
       data: {
         id: user?.id,
         username: user?.username,
-        img: user?.profile_picture,
+        profile_picture: user?.profile_picture,
         accessToken,
       },
     });
