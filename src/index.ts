@@ -10,7 +10,7 @@ var middleware = require("./middleware/log");
 const app = express();
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", "https://link-hub-v1.vercel.app"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   })
