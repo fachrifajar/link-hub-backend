@@ -139,11 +139,18 @@ const getPostSearch = async (req: Request, res: Response) => {
       },
     });
 
+    const orderedItems = post[0]?.Item.sort((a, b) => {
+      const aIndex = post[0]?.items?.indexOf(a.id) ?? -1;
+      const bIndex = post[0]?.items?.indexOf(b.id) ?? -1;
+      return aIndex - bIndex;
+    });
+
     res.status(200).json({
       message: `Success get user Post`,
       data: {
         post,
         user,
+        orderedItems,
       },
     });
   } catch (error) {
