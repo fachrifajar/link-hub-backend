@@ -112,7 +112,12 @@ const login = async (req: Request, res: Response) => {
       { expiresIn: "1d" }
     );
 
-    const addRefToken = await prisma.user.update({
+    res.cookie("ref", refreshToken, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    await prisma.user.update({
       where: { id: user?.id },
       data: {
         ref_token: refreshToken,
