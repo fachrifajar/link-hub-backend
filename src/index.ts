@@ -12,6 +12,7 @@ app.use(
   cors({
     origin: ["http://localhost:3000", "https://link-hub-v1.vercel.app"],
     credentials: true,
+    exposedHeaders: ["Set-Cookie"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
