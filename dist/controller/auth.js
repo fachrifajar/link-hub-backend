@@ -153,6 +153,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                     path: "/",
                     expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
                     sameSite: "none",
+                    secure: true,
                 });
                 return [4 /*yield*/, prisma.user.update({
                         where: { id: user === null || user === void 0 ? void 0 : user.id },
