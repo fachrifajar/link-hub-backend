@@ -116,7 +116,7 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, pwd, user, isPasswordValid, accessToken, refreshToken_1, addRefToken, error_2;
+    var _a, email, pwd, user, isPasswordValid, accessToken, refreshToken_1, error_2;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -147,6 +147,10 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                     id: user === null || user === void 0 ? void 0 : user.id,
                     name: user === null || user === void 0 ? void 0 : user.username,
                 }, REF_TOKEN_SECRET, { expiresIn: "1d" });
+                res.cookie("ref", refreshToken_1, {
+                    httpOnly: true,
+                    maxAge: 24 * 60 * 60 * 1000,
+                });
                 return [4 /*yield*/, prisma.user.update({
                         where: { id: user === null || user === void 0 ? void 0 : user.id },
                         data: {
@@ -155,7 +159,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                         },
                     })];
             case 5:
-                addRefToken = _b.sent();
+                _b.sent();
                 res.status(200).json({
                     message: "Login successfull!",
                     data: {
