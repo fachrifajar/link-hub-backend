@@ -142,7 +142,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                 accessToken = jwt.sign({
                     id: user === null || user === void 0 ? void 0 : user.id,
                     name: user === null || user === void 0 ? void 0 : user.username,
-                }, ACC_TOKEN_SECRET, { expiresIn: "20s" });
+                }, ACC_TOKEN_SECRET, { expiresIn: "15m" });
                 refreshToken_1 = jwt.sign({
                     id: user === null || user === void 0 ? void 0 : user.id,
                     name: user === null || user === void 0 ? void 0 : user.username,

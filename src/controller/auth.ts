@@ -100,7 +100,7 @@ const login = async (req: Request, res: Response) => {
         name: user?.username,
       },
       ACC_TOKEN_SECRET,
-      { expiresIn: "20s" }
+      { expiresIn: "15m" }
     );
 
     const refreshToken = jwt.sign(
