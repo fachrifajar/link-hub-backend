@@ -142,7 +142,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                 accessToken = jwt.sign({
                     id: user === null || user === void 0 ? void 0 : user.id,
                     name: user === null || user === void 0 ? void 0 : user.username,
-                }, ACC_TOKEN_SECRET, { expiresIn: "15m" });
+                }, ACC_TOKEN_SECRET, { expiresIn: "20s" });
                 refreshToken_1 = jwt.sign({
                     id: user === null || user === void 0 ? void 0 : user.id,
                     name: user === null || user === void 0 ? void 0 : user.username,
@@ -150,7 +150,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                 res.cookie("ref", refreshToken_1, {
                     httpOnly: true,
                     maxAge: 24 * 60 * 60 * 1000,
-                    path: "/",
+                    // path: "/",
                     expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
                     sameSite: "none",
                     secure: true,
