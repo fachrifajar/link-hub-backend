@@ -225,5 +225,48 @@ var refreshToken = function (req, res) { return __awaiter(void 0, void 0, void 0
         }
     });
 }); };
-module.exports = { register: register, login: login, refreshToken: refreshToken };
+var refreshToken2 = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var refreshToken_3, user_2, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                console.log(req.cookies);
+                refreshToken_3 = req.cookies.ref;
+                return [4 /*yield*/, prisma.user.findFirst({
+                        where: { ref_token: refreshToken_3 },
+                    })];
+            case 1:
+                user_2 = _a.sent();
+                if (!refreshToken_3) {
+                    throw { code: 401, message: "Refresh token not provided" };
+                }
+                if (!refreshToken_3) {
+                    return [2 /*return*/, res.status(401).json({ message: "No refresh token found" })];
+                }
+                jwt.verify(refreshToken_3, REF_TOKEN_SECRET, function (err, decoded) {
+                    if (err)
+                        return res.status(401).json({ message: "Token Expired" });
+                    var getRefreshToken = jwt.sign({
+                        id: user_2 === null || user_2 === void 0 ? void 0 : user_2.id,
+                        name: user_2 === null || user_2 === void 0 ? void 0 : user_2.username,
+                    }, ACC_TOKEN_SECRET, { expiresIn: "1h" });
+                    res.status(200).json({
+                        message: "Successfully retrieved refresh token",
+                        data: {
+                            getRefreshToken: getRefreshToken,
+                        },
+                    });
+                });
+                return [3 /*break*/, 3];
+            case 2:
+                error_4 = _a.sent();
+                console.error(error_4);
+                res.status(500).json({ message: "Internal server error" });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+module.exports = { register: register, login: login, refreshToken: refreshToken, refreshToken2: refreshToken2 };
 //# sourceMappingURL=auth.js.map

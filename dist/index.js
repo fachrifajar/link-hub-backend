@@ -9,6 +9,7 @@ var body_parser_1 = __importDefault(require("body-parser"));
 var express_fileupload_1 = __importDefault(require("express-fileupload"));
 var cors_1 = __importDefault(require("cors"));
 var path_1 = __importDefault(require("path"));
+var cookieParser = require("cookie-parser");
 var middleware = require("./middleware/log");
 var app = (0, express_1.default)();
 app.use((0, cors_1.default)({
@@ -17,6 +18,7 @@ app.use((0, cors_1.default)({
     exposedHeaders: ["Set-Cookie"],
     allowedHeaders: ["Content-Type", "Authorization"],
 }));
+app.use(cookieParser());
 app.use((0, helmet_1.default)());
 app.use(express_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: false }));

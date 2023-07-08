@@ -186,4 +186,46 @@ const refreshToken = async (req: Request, res: Response) => {
   }
 };
 
-module.exports = { register, login, refreshToken };
+const refreshToken2 = async (req: Request, res: Response) => {
+  try {
+    console.log(req.cookies);
+    const refreshToken = req.cookies.ref;
+
+    const user = await prisma.user.findFirst({
+      where: { ref_token: refreshToken },
+    });
+
+    if (!refreshToken) {
+      throw { code: 401, message: "Refresh token not provided" };
+    }
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: "No refresh token found" });
+    }
+
+    jwt.verify(refreshToken, REF_TOKEN_SECRET, (err: any, decoded: any) => {
+      if (err) return res.status(401).json({ message: "Token Expired" });
+
+      const getRefreshToken = jwt.sign(
+        {
+          id: user?.id,
+          name: user?.username,
+        },
+        ACC_TOKEN_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      res.status(200).json({
+        message: "Successfully retrieved refresh token",
+        data: {
+          getRefreshToken,
+        },
+      });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { register, login, refreshToken, refreshToken2 };

@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import fileUpload from "express-fileupload";
 import cors from "cors";
 import path from "path";
+const cookieParser = require("cookie-parser");
 
 var middleware = require("./middleware/log");
 
@@ -17,6 +18,7 @@ app.use(
   })
 );
 
+app.use(cookieParser());
 app.use(helmet());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
